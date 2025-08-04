@@ -36,13 +36,11 @@ class LabelManager:
         """
         # TODO: Implement eBay Fulfillment API integration
         logger.info(
-            f"Buying shipping label for order {order_data.get('order_id', 'unknown')}"
+            "Buying shipping label for order %s", order_data.get('order_id', 'unknown')
         )
 
         # Placeholder implementation
         # This will be replaced with actual eBay API calls
-
-        return None
 
     def download_label_pdf(self, label_url: str, order_id: str) -> Optional[Path]:
         """
@@ -57,10 +55,10 @@ class LabelManager:
         """
         # TODO: Implement PDF download
         logger.info("Downloading label PDF for order %s", order_id)
+        # Use label_url when implementing download functionality
+        _ = label_url  # Acknowledge unused parameter
 
         # Placeholder implementation
-
-        return None
 
     def refund_label(self, fulfillment_id: str) -> bool:
         """
@@ -73,7 +71,7 @@ class LabelManager:
             True if refund successful, False otherwise
         """
         # TODO: Implement label refunding
-        logger.info(f"Refunding label for fulfillment {fulfillment_id}")
+        logger.info("Refunding label for fulfillment %s", fulfillment_id)
 
         # Placeholder implementation
 

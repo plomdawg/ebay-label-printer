@@ -5,8 +5,6 @@ Tests for configuration management
 import os
 from unittest.mock import patch
 
-import pytest
-
 from app.config import Config
 
 
@@ -65,14 +63,17 @@ class TestConfig:
     )
     def test_validate_complete_config(self):
         """Test validation with all required fields"""
-        assert Config.validate() is True
+        config = Config()
+        assert config.validate() is True
 
     def test_validate_incomplete_config(self):
         """Test validation with missing required fields"""
         with patch.dict(os.environ, {}, clear=True):
-            assert Config.validate() is False
+            config = Config()
+            assert config.validate() is False
 
     @patch.dict(os.environ, {"EBAY_CLIENT_ID": "test_client_id"})
     def test_validate_partial_config(self):
         """Test validation with only some required fields"""
-        assert Config.validate() is False
+        config = Config()
+        assert config.validate() is False

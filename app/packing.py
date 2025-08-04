@@ -34,15 +34,18 @@ class PackingSlipGenerator:
         """
         # TODO: Implement PDF generation with reportlab/WeasyPrint
         logger.info(
-            f"Generating packing slip for order {order_data.get('order_id', 'unknown')}"
+            "Generating packing slip for order %s", order_data.get('order_id', 'unknown')
         )
 
         order_id = order_data.get("order_id", "unknown")
 
+        # Use order_id for QR code generation when implemented
+        qr_code = self._generate_qr_code(order_id)
+        # QR code will be used in PDF generation when implemented
+        _ = qr_code  # Acknowledge unused variable
+
         # Placeholder implementation
         # This will be replaced with actual PDF generation using reportlab
-
-        return None
 
     def _generate_qr_code(self, order_id: str) -> str:
         """
@@ -73,4 +76,11 @@ class PackingSlipGenerator:
             Formatted address string
         """
         # TODO: Implement address formatting
+        # Use address_data when implementing
+        _ = address_data  # Acknowledge unused parameter
         return ""
+
+    def validate_order_data(self, order_data: Dict[str, Any]) -> bool:
+        """Validate that order data contains required fields for packing slip generation"""
+        required_fields = ["order_id", "buyer_address"]
+        return all(field in order_data for field in required_fields)

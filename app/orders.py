@@ -29,20 +29,20 @@ class OrderManager:
         """Load previously seen order IDs from state file"""
         if self.state_file.exists():
             try:
-                with open(self.state_file, "r") as f:
+                with open(self.state_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     return set(data.get("seen_order_ids", []))
             except (json.JSONDecodeError, IOError) as e:
-                logger.warning(f"Could not load state file: {e}")
+                logger.warning("Could not load state file: %s", e)
         return set()
 
     def _save_seen_orders(self) -> None:
         """Save seen order IDs to state file"""
         try:
-            with open(self.state_file, "w") as f:
+            with open(self.state_file, "w", encoding="utf-8") as f:
                 json.dump({"seen_order_ids": list(self._seen_orders)}, f)
         except IOError as e:
-            logger.error(f"Could not save state file: {e}")
+            logger.error("Could not save state file: %s", e)
 
     def poll_new_orders(self) -> List[Dict[str, Any]]:
         """

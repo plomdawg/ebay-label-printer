@@ -46,7 +46,7 @@ class TestOrderManager:
 
             # Create state file with test data
             test_data = {"seen_order_ids": ["order1", "order2", "order3"]}
-            with open(state_file, "w") as f:
+            with open(state_file, "w", encoding="utf-8") as f:
                 json.dump(test_data, f)
 
             self.config.STATE_FILE = str(state_file)
@@ -67,7 +67,7 @@ class TestOrderManager:
 
             # Verify it was saved to file
             assert state_file.exists()
-            with open(state_file, "r") as f:
+            with open(state_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 assert "test_order_123" in data["seen_order_ids"]
 

@@ -83,8 +83,8 @@ class PrintManager:
         except subprocess.CalledProcessError as e:
             logger.error("Print command failed for %s: %s", pdf_path, e)
             return False
-        except Exception as e:
-            logger.error("Unexpected error printing %s: %s", pdf_path, e)
+        except (OSError, FileNotFoundError) as e:
+            logger.error("System error printing %s: %s", pdf_path, e)
             return False
 
     def test_printer_connection(self) -> bool:
@@ -113,6 +113,6 @@ class PrintManager:
         except subprocess.CalledProcessError as e:
             logger.error("Printer test command failed: %s", e)
             return False
-        except Exception as e:
-            logger.error("Unexpected error testing printer: %s", e)
+        except (OSError, FileNotFoundError) as e:
+            logger.error("System error testing printer: %s", e)
             return False

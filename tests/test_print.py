@@ -4,8 +4,8 @@ Tests for printing functionality
 
 import tempfile
 from pathlib import Path
+from subprocess import CalledProcessError
 from unittest.mock import Mock, patch, MagicMock
-
 
 from app.print import PrintManager
 from app.config import Config
@@ -72,8 +72,6 @@ class TestPrintManager:
     @patch("app.print.subprocess.run")
     def test_print_single_pdf_command_failure(self, mock_run):
         """Test handling of print command failure"""
-        from subprocess import CalledProcessError
-
         mock_run.side_effect = CalledProcessError(1, "lp", stderr="Printer error")
 
         manager = PrintManager(self.config)
@@ -104,8 +102,6 @@ class TestPrintManager:
     @patch("app.print.subprocess.run")
     def test_test_printer_connection_failure(self, mock_run):
         """Test printer connection test failure"""
-        from subprocess import CalledProcessError
-
         mock_run.side_effect = CalledProcessError(
             1, "lpstat", stderr="Printer not found"
         )

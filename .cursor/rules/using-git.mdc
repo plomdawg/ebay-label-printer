@@ -1,0 +1,11 @@
+---
+description: Using git
+alwaysApply: false
+---
+Create a new branch for each feature or bug fix.
+
+Use the branch name to describe the feature or bug fix.
+
+Do not commit INSTRUCTIONS.md or NOTES.md to the repo.
+
+Do not commit .cursor/rules/ to the repo.

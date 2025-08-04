@@ -1,6 +1,6 @@
 # eBay Label Printer Makefile
 
-.PHONY: help run test lint format build run-container clean install-dev
+.PHONY: help run test lint format build run-container clean install
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -9,18 +9,11 @@ help: ## Show this help message
 install: ## Install dependencies
 	pip install -r requirements.txt
 
-install-dev: ## Install development dependencies
-	pip install -r requirements.txt
-	pip install -e .
-
 run: ## Run the full automation cycle
 	python run.py
 
 test: ## Run all tests
 	pytest -v --cov=app tests/
-
-test-watch: ## Run tests in watch mode
-	pytest-watch --runner "pytest -v --cov=app tests/"
 
 lint: ## Check code style and type hints
 	pylint app/ tests/
@@ -28,9 +21,6 @@ lint: ## Check code style and type hints
 
 format: ## Format code with black
 	black app/ tests/
-
-format-check: ## Check if code needs formatting
-	black --check app/ tests/
 
 build: ## Build the Docker image
 	docker build -t ebay-shipper .
@@ -45,6 +35,3 @@ clean: ## Clean up temporary files
 	find . -type f -name "*.coverage" -delete
 	rm -rf .pytest_cache/
 	rm -rf htmlcov/
-
-dev-setup: install-dev ## Set up development environment
-	@echo "Development environment ready!"

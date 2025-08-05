@@ -112,7 +112,7 @@ ebay-shipper/
 
 Use environment variables or `.env` file for:
 
-* `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_REFRESH_TOKEN`
+* `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_DEV_ID`
 * `CUPS_SERVER_URI`
 * `PRINTER_NAME`
 

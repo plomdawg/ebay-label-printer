@@ -27,7 +27,7 @@ class TestConfig:
         {
             "EBAY_CLIENT_ID": "test_client_id",
             "EBAY_CLIENT_SECRET": "test_client_secret",
-            "EBAY_REFRESH_TOKEN": "test_refresh_token",
+            "EBAY_DEV_ID": "test_dev_id",
             "CUPS_SERVER_URI": "192.168.1.100",
             "PRINTER_NAME": "test_printer",
             "POLLING_INTERVAL": "600",
@@ -42,7 +42,7 @@ class TestConfig:
 
         assert config.EBAY_CLIENT_ID == "test_client_id"
         assert config.EBAY_CLIENT_SECRET == "test_client_secret"
-        assert config.EBAY_REFRESH_TOKEN == "test_refresh_token"
+        assert config.EBAY_DEV_ID == "test_dev_id"
 
         assert config.CUPS_SERVER_URI == "192.168.1.100"
         assert config.PRINTER_NAME == "test_printer"
@@ -57,7 +57,7 @@ class TestConfig:
             "EBAY_ENVIRONMENT": "production",
             "EBAY_CLIENT_ID": "test_client_id",
             "EBAY_CLIENT_SECRET": "test_client_secret",
-            "EBAY_DEV_ID": "test_refresh_token",
+            "EBAY_DEV_ID": "test_dev_id",
         },
     )
     def test_validate_complete_config(self):

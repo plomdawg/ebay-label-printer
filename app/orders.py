@@ -66,11 +66,8 @@ class OrderManager(EbayClientMixin):
             from_date = datetime.now() - timedelta(days=7)
             to_date = datetime.now()
 
-            # Use GetOrders call from Trading API
+            # Use GetOrders call from Trading API - ebaysdk handles authentication
             api_request = {
-                "RequesterCredentials": {
-                    "eBayAuthToken": self.config.EBAY_REFRESH_TOKEN or "TEST_TOKEN"
-                },
                 "CreateTimeFrom": from_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 "CreateTimeTo": to_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
                 "OrderStatus": "Active",  # Get active orders that need fulfillment

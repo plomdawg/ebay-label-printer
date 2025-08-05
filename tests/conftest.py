@@ -30,6 +30,5 @@ def mock_config():
     config.current_client_id = "test_client_id"
     config.current_dev_id = "test_dev_id"
     config.current_client_secret = "test_client_secret"
-    config.EBAY_REFRESH_TOKEN = "test_refresh_token"
     config.validate.return_value = True
     return config

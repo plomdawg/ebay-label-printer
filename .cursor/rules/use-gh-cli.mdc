@@ -1,6 +1,5 @@
 ---
-description: Use github cli after making changes.
-alwaysApply: false
+alwaysApply: true
 ---
 Use the GitHub CLI (gh) to interact with GitHub.
 

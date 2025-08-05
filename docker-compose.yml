@@ -1,0 +1,91 @@
+# eBay Label Printer - Docker Compose for Local Development
+version: '3.8'
+
+services:
+  ebay-printer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ebay-label-printer
+    environment:
+      # eBay API Configuration
+      - EBAY_APP_ID=${EBAY_APP_ID:-your_app_id_here}
+      - EBAY_CERT_ID=${EBAY_CERT_ID:-your_cert_id_here}
+      - EBAY_DEV_ID=${EBAY_DEV_ID:-your_dev_id_here}
+      - EBAY_TOKEN=${EBAY_TOKEN:-your_token_here}
+      - EBAY_ENV=${EBAY_ENV:-sandbox}
+      
+      # CUPS Configuration
+      - CUPS_SERVER=${CUPS_SERVER:-192.168.8.194}
+      - CUPS_PORT=${CUPS_PORT:-631}
+      - PRINTER_NAME=${PRINTER_NAME:-default}
+      
+      # Application Configuration
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - DRY_RUN=${DRY_RUN:-false}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-300}
+      
+    volumes:
+      # Persistent data directory for packing slips, labels, logs
+      - ./data:/app/data
+      # Mount the entire project for development
+      - .:/app
+      # Mount requirements for pip install during development
+      - /app/.venv
+    
+    ports:
+      # Expose port for potential web interface or health checks
+      - "8080:8080"
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import app; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Run in development mode - override command for file watching
+    command: >
+      sh -c "
+        echo 'Starting eBay Label Printer in development mode...' &&
+        python -m pytest tests/ &&
+        echo 'Tests passed. Starting application...' &&
+        python run.py
+      "
+
+  # Optional: Add a database service for future order tracking
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: ebay-printer-db
+  #   environment:
+  #     - POSTGRES_DB=ebay_printer
+  #     - POSTGRES_USER=printer
+  #     - POSTGRES_PASSWORD=printer123
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+
+  # Optional: Add Redis for caching and queues
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: ebay-printer-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+
+# Named volumes for persistent data
+volumes:
+  # postgres_data:
+  # redis_data:
+  app_data:
+    driver: local
+
+networks:
+  default:
+    name: ebay-printer-network

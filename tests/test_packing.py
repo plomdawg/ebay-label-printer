@@ -37,9 +37,11 @@ class TestPackingSlipGenerator:
             "total": "25.00",
         }
 
-        # Since this is a placeholder implementation, it should return None
+        # Should return a Path to the generated PDF
         result = self.packing_generator.generate_packing_slip(order_data)
-        assert result is None
+        assert result is not None
+        assert result.name == "packing_slip_12345-67890.pdf"
+        assert result.exists()  # File should be created
 
     def test_generate_packing_slip_with_missing_order_id(self):
         """Test generating packing slip with missing order ID"""
@@ -62,30 +64,40 @@ class TestPackingSlipGenerator:
         """Test generating QR code with valid order ID"""
         order_id = "12345-67890"
 
-        # Since this is a placeholder implementation, it should return empty string
+        # Should return base64 encoded QR code image
         result = self.packing_generator._generate_qr_code(order_id)
-        assert result == ""
+        assert result != ""
+        assert isinstance(result, str)
+        # Should be valid base64
+        import base64
+        try:
+            base64.b64decode(result)
+        except Exception:
+            assert False, "Result should be valid base64"
 
     def test_generate_qr_code_with_empty_order_id(self):
         """Test generating QR code with empty order ID"""
         order_id = ""
 
+        # Should still generate QR code, even with empty order ID
         result = self.packing_generator._generate_qr_code(order_id)
-        assert result == ""
+        assert result != ""
+        assert isinstance(result, str)
 
     def test_format_address_with_valid_data(self):
         """Test formatting address with valid address data"""
         address_data = {
             "name": "John Doe",
-            "street": "123 Main St",
+            "street1": "123 Main St",
             "city": "Anytown",
             "state": "CA",
-            "postalCode": "12345",
+            "postal_code": "12345",
         }
 
-        # Since this is a placeholder implementation, it should return empty string
+        # Should return formatted address string
         result = self.packing_generator._format_address(address_data)
-        assert result == ""
+        expected = "John Doe\n123 Main St\nAnytown, CA 12345"
+        assert result == expected
 
     def test_format_address_with_empty_data(self):
         """Test formatting address with empty address data"""
@@ -154,8 +166,13 @@ class TestPackingSlipGenerator:
 
         self.packing_generator._generate_qr_code(order_id)
 
-        mock_logger.debug.assert_called_once_with(
+        # Should call debug twice: once at start, once on success
+        assert mock_logger.debug.call_count == 2
+        mock_logger.debug.assert_any_call(
             "Generating QR code for order %s", "12345-67890"
+        )
+        mock_logger.debug.assert_any_call(
+            "Successfully generated QR code for order %s", "12345-67890"
         )
 
     def test_config_dependency(self):
@@ -173,8 +190,8 @@ class TestPackingSlipGenerator:
         result2 = self.packing_generator._generate_qr_code("12345-67890")
         result3 = self.packing_generator.validate_order_data(order_data)
 
-        assert result1 is None  # Placeholder returns None
-        assert result2 == ""  # Placeholder returns empty string
+        assert result1 is not None  # Should return Path to PDF
+        assert result2 != ""  # Should return base64 QR code
         assert result3 is True  # Should validate successfully
 
     def test_required_fields_validation(self):

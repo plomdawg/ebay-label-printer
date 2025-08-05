@@ -28,32 +28,33 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - [x] Create basic configuration system
 
 ### Core Functionality
-- [ ] Implement order polling from eBay API
-- [ ] Implement shipping label purchase
-- [ ] Implement packing slip PDF generation with QR codes
+- [ ] Implement order polling from eBay API (waiting on dev account)
+- [ ] Implement shipping label purchase 
+- [x] **Implement packing slip PDF generation with QR codes** ✨
 - [ ] Implement CUPS printing functionality
 - [ ] Add comprehensive error handling and logging
 
 ### Testing & Quality
 - [x] Unit tests for all modules (comprehensive coverage)
 - [x] 100% test coverage for labels.py and packing.py
-- [x] 86% overall test coverage (51 tests total)
+- [x] 85% overall test coverage (51 tests total)
 - [ ] Integration tests
 - [x] Linting setup
 - [x] Mock external dependencies for tests
 
 ## Current Engineer Notes
-- Started: Test coverage improvement for labels and packing modules
-- Focus: Adding comprehensive test suites for complete code coverage
-- COMPLETED: Added complete test suite for labels.py module (20 tests)
-- COMPLETED: Added complete test suite for packing.py module (18 tests)  
-- COMPLETED: Improved overall test coverage from 59% to 86%
-- COMPLETED: Both labels.py and packing.py now have 100% test coverage
+- **MAJOR MILESTONE**: PDF and QR code generation now fully implemented! 🎉
+- **COMPLETED**: Full PDF generation for packing slips using ReportLab
+- **COMPLETED**: QR code generation with base64 encoding using qrcode library  
+- **COMPLETED**: Address formatting for shipping labels
+- **COMPLETED**: Updated all tests to match new real implementations
+- **COMPLETED**: Added docker-compose.yml for easier local development
 - Previous Branches: 
   - `feature/initial-project-structure` (merged to main)
   - `feature/containerization` (merged to main) 
-- Current Branch: `feature/comprehensive-test-coverage`
-- Status: Ready for review - 51 tests passing, test coverage at 86%, linter clean
+  - `feature/comprehensive-test-coverage` (merged to main)
+- **Current Branch**: `feature/pdf-qr-generation`
+- **Status**: All 51 tests passing, test coverage at 85%, ready for PR submission
 
 ## Files Created in First PR
 - `app/` directory with all core modules (config.py, orders.py, labels.py, packing.py, print.py)
@@ -74,13 +75,19 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - `tests/test_packing.py` with 18 comprehensive tests for packing slip generation
 - Improved overall test coverage from 59% to 86%
 
+## Files Created in Fourth PR (PDF/QR Generation)
+- **Enhanced `app/packing.py`** with full PDF generation using ReportLab
+- **Enhanced `app/packing.py`** with QR code generation using qrcode library
+- **Added `docker-compose.yml`** for easier local development with volumes and environment variables
+- **Updated all packing tests** to match new real implementations instead of placeholders
+
 ## Next Steps for Future PRs
-1. Implement actual eBay API integration in orders.py
-2. Add PDF generation functionality to packing.py (reportlab/WeasyPrint)
-3. Add QR code generation functionality to packing.py
-4. Add integration tests
-5. Implement error handling and logging improvements
-6. Add docker-compose.yml for easier local development
+1. **Priority**: Implement CUPS printing integration in print.py for actual label/packing slip printing
+2. Implement actual eBay API integration in orders.py (when dev account is ready)
+3. Add integration tests for full order → label → packing → print workflow  
+4. Implement error handling and logging improvements
+5. Add web dashboard for monitoring order processing status
+6. Add email notifications for successful/failed processing
 
 ## Technical Decisions Made
 

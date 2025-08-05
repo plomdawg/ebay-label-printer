@@ -13,7 +13,7 @@ from typing import List, Dict, Any, Set
 from pathlib import Path
 from datetime import datetime, timedelta
 
-from ebay_rest import Error as EbayError
+from ebaysdk.exception import ConnectionError as EbayConnectionError
 from .config import Config
 from .ebay_client import EbayClientMixin
 
@@ -57,42 +57,60 @@ class OrderManager(EbayClientMixin):
         logger.info("Polling eBay API for new orders...")
         new_orders: List[Dict[str, Any]] = []
 
-        if not self.api:
-            logger.warning("eBay API not initialized, returning empty list")
+        if not self.trading_api:
+            logger.warning("eBay Trading API not initialized, returning empty list")
             return new_orders
 
         try:
-            # Get orders from the last 24 hours to catch any recent orders
-            from_date = datetime.now() - timedelta(days=1)
+            # Get orders from the last 7 days to catch any recent orders
+            from_date = datetime.now() - timedelta(days=7)
+            to_date = datetime.now()
 
-            # Use the sell_fulfillment_get_orders method from ebay-rest
-            # Note: This searches for orders that need fulfillment
-            orders_response = self.api.sell_fulfillment_get_orders(
-                filter_creation_date_range_from=from_date.isoformat() + "Z",
-                limit=50,  # Reasonable batch size
-            )
+            # Use GetOrders call from Trading API
+            api_request = {
+                "RequesterCredentials": {
+                    "eBayAuthToken": self.config.EBAY_REFRESH_TOKEN or "TEST_TOKEN"
+                },
+                "CreateTimeFrom": from_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                "CreateTimeTo": to_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                "OrderStatus": "Active",  # Get active orders that need fulfillment
+                "ListingType": "FixedPriceItem",  # Focus on Buy It Now items
+                "Pagination": {"EntriesPerPage": 50, "PageNumber": 1},
+            }
 
-            for order_record in orders_response:
-                if "record" not in order_record:
-                    continue
+            response = self.trading_api.execute("GetOrders", api_request)
 
-                order = order_record["record"]
-                order_id = order.get("orderId", "")
+            if response.reply.Ack in ["Success", "Warning"]:
+                orders_array = response.dict().get("OrderArray", {})
+                orders = orders_array.get("Order", [])
 
-                # Skip if we've already processed this order
-                if self.is_order_seen(order_id):
-                    continue
+                # Handle single order case (not in array)
+                if isinstance(orders, dict):
+                    orders = [orders]
 
-                # Only process orders that are ready to ship
-                order_fulfillment_status = order.get(
-                    "orderFulfillmentStatus", "NOT_STARTED"
+                for order in orders:
+                    order_id = order.get("OrderID", "")
+
+                    # Skip if we've already processed this order
+                    if self.is_order_seen(order_id):
+                        continue
+
+                    # Check if order needs fulfillment
+                    order_status = order.get("OrderStatus", "")
+                    shipped_time = order.get("ShippedTime")
+
+                    # Only process orders that are completed but not yet shipped
+                    if order_status == "Completed" and not shipped_time:
+                        new_orders.append(order)
+                        logger.info("Found new order %s", order_id)
+            else:
+                logger.error(
+                    "eBay API returned error: %s",
+                    response.dict().get("Errors", "Unknown error"),
                 )
-                if order_fulfillment_status in ["NOT_STARTED", "IN_PROGRESS"]:
-                    new_orders.append(order)
-                    logger.info("Found new order %s", order_id)
 
-        except EbayError as e:
-            logger.error("eBay API error while polling orders: %s", e)
+        except EbayConnectionError as e:
+            logger.error("eBay API connection error while polling orders: %s", e)
         except (OSError, ValueError, KeyError) as e:
             logger.error("Unexpected error while polling orders: %s", e)
 

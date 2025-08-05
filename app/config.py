@@ -6,18 +6,18 @@ Handles environment variables and settings for:
 - CUPS printer configuration
 - Application settings
 """
+# pylint: disable=too-many-instance-attributes, invalid-name
 
 import os
 from typing import Optional
 
 
-class Config:  # pylint: disable=too-many-instance-attributes
+class Config:
     """Configuration class for eBay Label Printer"""
 
     def __init__(self) -> None:
         """Initialize configuration with environment variables"""
         # eBay API Configuration
-        # pylint: disable=invalid-name
         self.EBAY_CLIENT_ID: Optional[str] = os.getenv("EBAY_CLIENT_ID")
         self.EBAY_CLIENT_SECRET: Optional[str] = os.getenv("EBAY_CLIENT_SECRET")
         self.EBAY_REFRESH_TOKEN: Optional[str] = os.getenv("EBAY_REFRESH_TOKEN")
@@ -38,7 +38,6 @@ class Config:  # pylint: disable=too-many-instance-attributes
 
         # Data Storage
         self.STATE_FILE: str = os.getenv("STATE_FILE", "seen_order_ids.json")
-        # pylint: enable=invalid-name
 
     def validate(self) -> bool:
         """Validate that required configuration is present"""

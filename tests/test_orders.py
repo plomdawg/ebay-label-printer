@@ -1,7 +1,7 @@
 """
 Tests for order management functionality
 """
-# pylint: disable=protected-access
+# pylint: disable=protected-access, attribute-defined-outside-init
 import json
 import tempfile
 from pathlib import Path
@@ -14,8 +14,6 @@ from app.config import Config
 
 class TestOrderManager:
     """Test order polling and management"""
-
-    # pylint: disable=attribute-defined-outside-init
 
     def setup_method(self):
         """Set up test fixtures"""

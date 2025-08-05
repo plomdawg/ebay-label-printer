@@ -109,10 +109,8 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 
 ## Technical Decisions Made
 
-### eBay REST API Integration Approach
-- **Package Choice**: Selected `ebay-rest==1.0.14` over the older `ebaysdk` for better modern API support
-- **Configuration**: Extended Config class to support ebay-rest application/user/site configuration pattern
-- **Error Handling**: Implemented comprehensive exception handling for both EbayError and general exceptions
+### eBay API Integration Approach
+- **Package Choice**: Selected `ebaysdk`
 - **Order Polling**: Uses `sell_fulfillment_get_orders` with date filtering to find orders needing fulfillment
 - **Label Management**: Implements full workflow: create fulfillment → get label URL → download PDF
 - **File Organization**: Labels saved to `data/labels/` directory with order-specific naming

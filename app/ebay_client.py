@@ -2,7 +2,7 @@
 Shared eBay API client functionality
 """
 import logging
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 
 from ebaysdk.exception import ConnectionError as EbayConnectionError
 from ebaysdk.trading import Connection as TradingAPI
@@ -19,8 +19,8 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
     def __init__(self, config: Config):
         self.config = config
         self.trading_api = None
-        self._finding_api = None
-        self._shopping_api = None
+        self.finding_api = None
+        self.shopping_api = None
         self._init_ebay_apis()
 
     def _init_ebay_apis(self) -> None:
@@ -37,10 +37,10 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
             self.trading_api = TradingAPI(config_file=None, **config_dict)
 
             # Initialize Finding API (for searching)
-            self._finding_api = FindingAPI(config_file=None, **config_dict)
+            self.finding_api = FindingAPI(config_file=None, **config_dict)
 
             # Initialize Shopping API (for item details)
-            self._shopping_api = ShoppingAPI(config_file=None, **config_dict)
+            self.shopping_api = ShoppingAPI(config_file=None, **config_dict)
 
             logger.info(
                 "eBay SDK APIs initialized successfully for %s environment",
@@ -49,13 +49,13 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
         except EbayConnectionError as e:
             logger.error("Failed to initialize eBay APIs: %s", e)
             self.trading_api = None
-            self._finding_api = None
-            self._shopping_api = None
+            self.finding_api = None
+            self.shopping_api = None
         except (OSError, ValueError) as e:
             logger.error("Unexpected error initializing eBay APIs: %s", e)
             self.trading_api = None
-            self._finding_api = None
-            self._shopping_api = None
+            self.finding_api = None
+            self.shopping_api = None
 
     def _get_api_config(self) -> Dict[str, Any]:
         """Get API configuration dictionary for ebaysdk"""
@@ -71,18 +71,3 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
             "domain": domain,
             "siteid": self.config.EBAY_SITE_ID,
         }
-
-    @property
-    def trading_api(self) -> Optional[TradingAPI]:
-        """Get the eBay Trading API client"""
-        return self.trading_api
-
-    @property
-    def finding_api(self) -> Optional[FindingAPI]:
-        """Get the eBay Finding API client"""
-        return self._finding_api
-
-    @property
-    def shopping_api(self) -> Optional[ShoppingAPI]:
-        """Get the eBay Shopping API client"""
-        return self._shopping_api

@@ -5,7 +5,7 @@ Automates eBay order fulfillment: detects new orders â†’ buys shipping labels â†
 ## Quick Start
 
 Set environment variables:
-- `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_REFRESH_TOKEN`
+- `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_DEV_ID`
 - `CUPS_SERVER_URI`, `PRINTER_NAME`
 
 ```bash

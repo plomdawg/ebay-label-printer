@@ -21,7 +21,6 @@ class Config:  # pylint: disable=too-few-public-methods
         self.EBAY_CLIENT_ID: Optional[str] = os.getenv("EBAY_CLIENT_ID")
         self.EBAY_CLIENT_SECRET: Optional[str] = os.getenv("EBAY_CLIENT_SECRET")
         self.EBAY_DEV_ID: Optional[str] = os.getenv("EBAY_DEV_ID")
-        self.EBAY_REFRESH_TOKEN: Optional[str] = os.getenv("EBAY_REFRESH_TOKEN")
 
         # Sandbox configuration
         self.EBAY_SANDBOX_CLIENT_ID: Optional[str] = os.getenv("EBAY_SANDBOX_CLIENT_ID")

@@ -1,11 +1,9 @@
 """
 Tests for shipping label management
 """
+# pylint: disable=protected-access, attribute-defined-outside-init, assignment-from-none
 
-from unittest.mock import Mock, patch
-from pathlib import Path
-
-import pytest
+from unittest.mock import patch
 
 from app.config import Config
 from app.labels import LabelManager
@@ -29,7 +27,7 @@ class TestLabelManager:
         order_data = {
             "order_id": "12345-67890",
             "buyer_address": {"name": "John Doe", "street": "123 Main St"},
-            "total": "25.00"
+            "total": "25.00",
         }
 
         # Since this is a placeholder implementation, it should return None
@@ -40,7 +38,7 @@ class TestLabelManager:
         """Test buying shipping label with missing order ID"""
         order_data = {
             "buyer_address": {"name": "John Doe", "street": "123 Main St"},
-            "total": "25.00"
+            "total": "25.00",
         }
 
         # Should handle missing order_id gracefully
@@ -94,7 +92,7 @@ class TestLabelManager:
         result = self.label_manager.refund_label(fulfillment_id)
         assert result is False
 
-    @patch('app.labels.logger')
+    @patch("app.labels.logger")
     def test_buy_shipping_label_logs_correctly(self, mock_logger):
         """Test that buy_shipping_label logs the correct information"""
         order_data = {"order_id": "12345-67890"}
@@ -105,7 +103,7 @@ class TestLabelManager:
             "Buying shipping label for order %s", "12345-67890"
         )
 
-    @patch('app.labels.logger')
+    @patch("app.labels.logger")
     def test_buy_shipping_label_logs_unknown_order(self, mock_logger):
         """Test that buy_shipping_label logs 'unknown' for missing order_id"""
         order_data = {}
@@ -116,7 +114,7 @@ class TestLabelManager:
             "Buying shipping label for order %s", "unknown"
         )
 
-    @patch('app.labels.logger')
+    @patch("app.labels.logger")
     def test_download_label_pdf_logs_correctly(self, mock_logger):
         """Test that download_label_pdf logs the correct information"""
         label_url = "https://example.com/label.pdf"
@@ -128,7 +126,7 @@ class TestLabelManager:
             "Downloading label PDF for order %s", "12345-67890"
         )
 
-    @patch('app.labels.logger')
+    @patch("app.labels.logger")
     def test_refund_label_logs_correctly(self, mock_logger):
         """Test that refund_label logs the correct information"""
         fulfillment_id = "FULFILL-12345"
@@ -142,16 +140,18 @@ class TestLabelManager:
     def test_config_dependency(self):
         """Test that LabelManager properly uses the config object"""
         # Test that the manager stores and can access config
-        assert hasattr(self.label_manager, 'config')
+        assert hasattr(self.label_manager, "config")
         assert self.label_manager.config is not None
 
     def test_multiple_label_operations(self):
         """Test performing multiple label operations in sequence"""
         order_data = {"order_id": "12345-67890"}
-        
+
         # Should be able to perform multiple operations
         result1 = self.label_manager.buy_shipping_label(order_data)
-        result2 = self.label_manager.download_label_pdf("https://example.com/label.pdf", "12345-67890")
+        result2 = self.label_manager.download_label_pdf(
+            "https://example.com/label.pdf", "12345-67890"
+        )
         result3 = self.label_manager.refund_label("FULFILL-12345")
 
         assert result1 is None  # Placeholder returns None

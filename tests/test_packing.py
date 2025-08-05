@@ -1,10 +1,9 @@
 """
 Tests for packing slip generation
 """
+# pylint: disable=protected-access, attribute-defined-outside-init, assignment-from-none
 
-from unittest.mock import Mock, patch
-
-import pytest
+from unittest.mock import patch
 
 from app.config import Config
 from app.packing import PackingSlipGenerator
@@ -32,10 +31,10 @@ class TestPackingSlipGenerator:
                 "street": "123 Main St",
                 "city": "Anytown",
                 "state": "CA",
-                "postalCode": "12345"
+                "postalCode": "12345",
             },
             "quantity": 2,
-            "total": "25.00"
+            "total": "25.00",
         }
 
         # Since this is a placeholder implementation, it should return None
@@ -46,7 +45,7 @@ class TestPackingSlipGenerator:
         """Test generating packing slip with missing order ID"""
         order_data = {
             "buyer_address": {"name": "John Doe", "street": "123 Main St"},
-            "quantity": 1
+            "quantity": 1,
         }
 
         result = self.packing_generator.generate_packing_slip(order_data)
@@ -81,7 +80,7 @@ class TestPackingSlipGenerator:
             "street": "123 Main St",
             "city": "Anytown",
             "state": "CA",
-            "postalCode": "12345"
+            "postalCode": "12345",
         }
 
         # Since this is a placeholder implementation, it should return empty string
@@ -99,10 +98,7 @@ class TestPackingSlipGenerator:
         """Test validating order data with all required fields"""
         order_data = {
             "order_id": "12345-67890",
-            "buyer_address": {
-                "name": "John Doe",
-                "street": "123 Main St"
-            }
+            "buyer_address": {"name": "John Doe", "street": "123 Main St"},
         }
 
         result = self.packing_generator.validate_order_data(order_data)
@@ -110,21 +106,14 @@ class TestPackingSlipGenerator:
 
     def test_validate_order_data_missing_order_id(self):
         """Test validating order data missing order_id"""
-        order_data = {
-            "buyer_address": {
-                "name": "John Doe",
-                "street": "123 Main St"
-            }
-        }
+        order_data = {"buyer_address": {"name": "John Doe", "street": "123 Main St"}}
 
         result = self.packing_generator.validate_order_data(order_data)
         assert result is False
 
     def test_validate_order_data_missing_buyer_address(self):
         """Test validating order data missing buyer_address"""
-        order_data = {
-            "order_id": "12345-67890"
-        }
+        order_data = {"order_id": "12345-67890"}
 
         result = self.packing_generator.validate_order_data(order_data)
         assert result is False
@@ -136,7 +125,7 @@ class TestPackingSlipGenerator:
         result = self.packing_generator.validate_order_data(order_data)
         assert result is False
 
-    @patch('app.packing.logger')
+    @patch("app.packing.logger")
     def test_generate_packing_slip_logs_correctly(self, mock_logger):
         """Test that generate_packing_slip logs the correct information"""
         order_data = {"order_id": "12345-67890"}
@@ -147,7 +136,7 @@ class TestPackingSlipGenerator:
             "Generating packing slip for order %s", "12345-67890"
         )
 
-    @patch('app.packing.logger')
+    @patch("app.packing.logger")
     def test_generate_packing_slip_logs_unknown_order(self, mock_logger):
         """Test that generate_packing_slip logs 'unknown' for missing order_id"""
         order_data = {}
@@ -158,7 +147,7 @@ class TestPackingSlipGenerator:
             "Generating packing slip for order %s", "unknown"
         )
 
-    @patch('app.packing.logger')
+    @patch("app.packing.logger")
     def test_generate_qr_code_logs_debug(self, mock_logger):
         """Test that _generate_qr_code logs debug information"""
         order_id = "12345-67890"
@@ -172,23 +161,20 @@ class TestPackingSlipGenerator:
     def test_config_dependency(self):
         """Test that PackingSlipGenerator properly uses the config object"""
         # Test that the generator stores and can access config
-        assert hasattr(self.packing_generator, 'config')
+        assert hasattr(self.packing_generator, "config")
         assert self.packing_generator.config is not None
 
     def test_multiple_packing_operations(self):
         """Test performing multiple packing operations in sequence"""
-        order_data = {
-            "order_id": "12345-67890",
-            "buyer_address": {"name": "John Doe"}
-        }
-        
+        order_data = {"order_id": "12345-67890", "buyer_address": {"name": "John Doe"}}
+
         # Should be able to perform multiple operations
         result1 = self.packing_generator.generate_packing_slip(order_data)
         result2 = self.packing_generator._generate_qr_code("12345-67890")
         result3 = self.packing_generator.validate_order_data(order_data)
 
         assert result1 is None  # Placeholder returns None
-        assert result2 == ""    # Placeholder returns empty string
+        assert result2 == ""  # Placeholder returns empty string
         assert result3 is True  # Should validate successfully
 
     def test_required_fields_validation(self):
@@ -198,7 +184,10 @@ class TestPackingSlipGenerator:
             ({"order_id": "123"}, False),  # Missing buyer_address
             ({"buyer_address": {}}, False),  # Missing order_id
             ({"order_id": "123", "buyer_address": {}}, True),  # Both present
-            ({"order_id": "123", "buyer_address": {}, "extra_field": "value"}, True),  # Extra fields OK
+            (
+                {"order_id": "123", "buyer_address": {}, "extra_field": "value"},
+                True,
+            ),  # Extra fields OK
         ]
 
         for order_data, expected in test_cases:

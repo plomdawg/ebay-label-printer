@@ -70,8 +70,9 @@ class TestConfig:
             config = Config()
             assert config.validate() is False
 
-    @patch.dict(os.environ, {"EBAY_CLIENT_ID": "test_client_id"})
+    @patch.dict(os.environ, {"EBAY_SANDBOX_CLIENT_ID": "test_client_id"}, clear=True)
     def test_validate_partial_config(self):
-        """Test validation with only some required fields"""
+        """Test validation with only some required fields (missing other sandbox fields)"""
         config = Config()
+        # Should fail because it only has client_id but missing client_secret and dev_id for sandbox
         assert config.validate() is False

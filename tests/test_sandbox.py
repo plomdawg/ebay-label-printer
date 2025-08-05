@@ -181,7 +181,6 @@ class TestSandboxLabelCreation:
             assert result["tracking_number"].startswith("TEST")
 
 
-@pytest.mark.integration
 class TestSandboxIntegration:
     """Integration tests for sandbox environment
 

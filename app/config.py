@@ -12,7 +12,7 @@ import os
 from typing import Optional
 
 
-class Config:
+class Config:  # pylint: disable=too-few-public-methods
     """Configuration class for eBay Label Printer"""
 
     def __init__(self) -> None:

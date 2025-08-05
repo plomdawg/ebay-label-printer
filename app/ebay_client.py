@@ -10,7 +10,7 @@ from .config import Config
 logger = logging.getLogger(__name__)
 
 
-class EbayClientMixin:
+class EbayClientMixin:  # pylint: disable=too-few-public-methods
     """Mixin class for shared eBay API client functionality"""
 
     def __init__(self, config: Config):

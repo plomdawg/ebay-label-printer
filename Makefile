@@ -22,6 +22,9 @@ lint: ## Check code style and type hints
 format: ## Format code with black
 	black app/ tests/
 
+format-check: ## Check if code needs formatting
+	black --check app/ tests/
+
 build: ## Build the Docker image
 	docker build -t ebay-shipper .
 

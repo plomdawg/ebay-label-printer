@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint with pylint
+      - name: Lint with pylint and mypy
         run: |
           make lint
         continue-on-error: true # Don't fail build on lint warnings initially

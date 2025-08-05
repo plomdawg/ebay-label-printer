@@ -3,20 +3,16 @@ Packing slip generation
 
 Handles:
 - PDF generation for packing slips
-- QR code creation linking to orders
 - Layout and formatting
 """
 # pylint: disable=useless-return
 
-import base64
-import binascii
-import io
+
 import logging
 from typing import Dict, Any, Optional
 from pathlib import Path
 
-import qrcode  # type: ignore
-from qrcode.image.pil import PilImage  # type: ignore
+
 import reportlab.platypus  # type: ignore
 import reportlab.lib.pagesizes  # type: ignore
 import reportlab.lib.styles  # type: ignore
@@ -29,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class PackingSlipGenerator:
-    """Generates packing slips with QR codes"""
+    """Generates packing slips for order fulfillment"""
 
     def __init__(self, config: Config):
         self.config = config
@@ -120,9 +116,6 @@ class PackingSlipGenerator:
         # Add items
         self._add_items_list(story, order_data, header_style, styles)
 
-        # Add QR code
-        self._add_qr_code(story, order_id, header_style)
-
         return story
 
     def _get_pdf_styles(self, styles):
@@ -172,97 +165,6 @@ class PackingSlipGenerator:
                 item_text = f"• {title} (Qty: {quantity})"
                 story.append(reportlab.platypus.Paragraph(item_text, styles["Normal"]))
             story.append(reportlab.platypus.Spacer(1, 20))
-
-    def _add_qr_code(self, story: list, order_id: str, header_style):
-        """Add QR code to PDF story"""
-        qr_code_base64 = self._generate_qr_code(order_id)
-        if qr_code_base64:
-            try:
-                # Decode base64 and create image
-                qr_image_data = base64.b64decode(qr_code_base64)
-                qr_buffer = io.BytesIO(qr_image_data)
-
-                # Add QR code to PDF
-                story.append(
-                    reportlab.platypus.Paragraph("Order QR Code:", header_style)
-                )
-                story.append(reportlab.platypus.Spacer(1, 6))
-
-                # Create reportlab Image from BytesIO
-                qr_img = reportlab.platypus.Image(
-                    qr_buffer,
-                    width=2 * reportlab.lib.units.inch,
-                    height=2 * reportlab.lib.units.inch,
-                )
-                story.append(qr_img)
-
-            except (ValueError, binascii.Error) as e:
-                logger.warning(
-                    "Invalid QR code data for order %s: %s", order_id, str(e)
-                )
-            except (IOError, OSError) as e:
-                logger.warning(
-                    "Failed to add QR code to PDF for order %s: %s", order_id, str(e)
-                )
-
-    def _generate_qr_code(self, order_id: str) -> str:
-        """
-        Generate QR code for the order
-
-        Args:
-            order_id: eBay order identifier
-
-        Returns:
-            Base64 encoded QR code image
-        """
-        logger.debug("Generating QR code for order %s", order_id)
-
-        try:
-            # Create QR code instance
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-
-            # Add order ID as data
-            qr.add_data(f"ORDER:{order_id}")
-            qr.make(fit=True)
-
-            # Create image
-            img = qr.make_image(
-                fill_color="black", back_color="white", image_factory=PilImage
-            )
-
-            # Convert to base64
-            buffer = io.BytesIO()
-            img.save(buffer, format="PNG")
-            buffer.seek(0)
-
-            # Encode as base64 string
-            qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
-
-            logger.debug("Successfully generated QR code for order %s", order_id)
-            return qr_base64
-
-        except (IOError, OSError) as e:
-            logger.error(
-                "File operation error generating QR code for order %s: %s",
-                order_id,
-                str(e),
-            )
-            return ""
-        except (ValueError, TypeError) as e:
-            logger.error(
-                "Invalid data for QR code generation for order %s: %s", order_id, str(e)
-            )
-            return ""
-        except Exception as e:  # pylint: disable=broad-exception-caught
-            logger.error(
-                "Unexpected error generating QR code for order %s: %s", order_id, str(e)
-            )
-            return ""
 
     def _format_address(self, address_data: Dict[str, Any]) -> str:
         """

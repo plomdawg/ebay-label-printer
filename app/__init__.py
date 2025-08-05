@@ -4,7 +4,7 @@ eBay Label Printer Application
 Automates the eBay order fulfillment pipeline:
 - Detect new orders from eBay
 - Buy shipping labels
-- Generate packing slips with QR codes  
+- Generate packing slips
 - Print to CUPS printer
 """
 

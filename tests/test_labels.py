@@ -30,7 +30,9 @@ class TestLabelManager:
         result = label_manager.buy_shipping_label(order_data)
         assert result is None
 
-    def test_buy_shipping_label_with_missing_order_id(self, mock_config, mock_ebay_apis):
+    def test_buy_shipping_label_with_missing_order_id(
+        self, mock_config, mock_ebay_apis
+    ):
         """Test buying shipping label with missing order ID"""
         label_manager = LabelManager(mock_config)
         order_data = {
@@ -96,7 +98,9 @@ class TestLabelManager:
         assert result is False
 
     @patch("app.labels.logger")
-    def test_buy_shipping_label_logs_correctly(self, mock_logger, mock_config, mock_ebay_apis):
+    def test_buy_shipping_label_logs_correctly(
+        self, mock_logger, mock_config, mock_ebay_apis
+    ):
         """Test that buy_shipping_label logs the correct information"""
         label_manager = LabelManager(mock_config)
         order_data = {"OrderID": "12345-67890"}
@@ -108,7 +112,9 @@ class TestLabelManager:
         )
 
     @patch("app.labels.logger")
-    def test_buy_shipping_label_logs_unknown_order(self, mock_logger, mock_config, mock_ebay_apis):
+    def test_buy_shipping_label_logs_unknown_order(
+        self, mock_logger, mock_config, mock_ebay_apis
+    ):
         """Test that buy_shipping_label logs 'unknown' for missing order_id"""
         label_manager = LabelManager(mock_config)
         order_data = {}
@@ -120,7 +126,9 @@ class TestLabelManager:
         )
 
     @patch("app.labels.logger")
-    def test_download_label_pdf_logs_correctly(self, mock_logger, mock_config, mock_ebay_apis):
+    def test_download_label_pdf_logs_correctly(
+        self, mock_logger, mock_config, mock_ebay_apis
+    ):
         """Test that download_label_pdf logs the correct information"""
         label_manager = LabelManager(mock_config)
         label_url = "https://example.com/label.pdf"
@@ -133,7 +141,9 @@ class TestLabelManager:
         )
 
     @patch("app.labels.logger")
-    def test_refund_label_logs_correctly(self, mock_logger, mock_config, mock_ebay_apis):
+    def test_refund_label_logs_correctly(
+        self, mock_logger, mock_config, mock_ebay_apis
+    ):
         """Test that refund_label logs the correct information"""
         label_manager = LabelManager(mock_config)
         fulfillment_id = "FULFILL-12345"

@@ -10,14 +10,13 @@ from app.config import Config
 @pytest.fixture
 def mock_ebay_apis():
     """Mock all eBay SDK APIs for testing"""
-    with patch('app.ebay_client.TradingAPI') as mock_trading, \
-         patch('app.ebay_client.FindingAPI') as mock_finding, \
-         patch('app.ebay_client.ShoppingAPI') as mock_shopping:
-        
+    with patch("app.ebay_client.TradingAPI") as mock_trading, patch(
+        "app.ebay_client.FindingAPI"
+    ) as mock_finding, patch("app.ebay_client.ShoppingAPI") as mock_shopping:
         yield {
-            'trading': mock_trading,
-            'finding': mock_finding, 
-            'shopping': mock_shopping
+            "trading": mock_trading,
+            "finding": mock_finding,
+            "shopping": mock_shopping,
         }
 
 

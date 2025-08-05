@@ -31,7 +31,9 @@ class TestLabelManager:
         print(result)
         assert result is None
 
-    def test_buy_shipping_label_with_missing_order_id(self, mock_config, mock_ebay_apis):
+    def test_buy_shipping_label_with_missing_order_id(
+        self, mock_config, mock_ebay_apis
+    ):
         """Test buying shipping label with missing order ID"""
         label_manager = LabelManager(mock_config)
         order_data = {

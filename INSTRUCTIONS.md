@@ -198,5 +198,3 @@ jobs:
 * Minimal dependencies, fast startup, robust logging
 
 ---
-
-Do not commit this file to the repo.

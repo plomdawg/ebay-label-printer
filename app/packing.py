@@ -6,6 +6,7 @@ Handles:
 - QR code creation linking to orders
 - Layout and formatting
 """
+# pylint: disable=useless-return
 
 import logging
 from typing import Dict, Any, Optional
@@ -34,7 +35,8 @@ class PackingSlipGenerator:
         """
         # TODO: Implement PDF generation with reportlab/WeasyPrint
         logger.info(
-            "Generating packing slip for order %s", order_data.get('order_id', 'unknown')
+            "Generating packing slip for order %s",
+            order_data.get("order_id", "unknown"),
         )
 
         order_id = order_data.get("order_id", "unknown")
@@ -46,6 +48,7 @@ class PackingSlipGenerator:
 
         # Placeholder implementation
         # This will be replaced with actual PDF generation using reportlab
+        return None
 
     def _generate_qr_code(self, order_id: str) -> str:
         """

@@ -6,7 +6,7 @@ Handles:
 - Label refunding if needed
 - PDF download and storage
 """
-
+# pylint: disable=useless-return
 import logging
 from typing import Dict, Any, Optional
 from pathlib import Path
@@ -36,11 +36,12 @@ class LabelManager:
         """
         # TODO: Implement eBay Fulfillment API integration
         logger.info(
-            "Buying shipping label for order %s", order_data.get('order_id', 'unknown')
+            "Buying shipping label for order %s", order_data.get("order_id", "unknown")
         )
 
         # Placeholder implementation
         # This will be replaced with actual eBay API calls
+        return None
 
     def download_label_pdf(self, label_url: str, order_id: str) -> Optional[Path]:
         """
@@ -59,6 +60,7 @@ class LabelManager:
         _ = label_url  # Acknowledge unused parameter
 
         # Placeholder implementation
+        return None
 
     def refund_label(self, fulfillment_id: str) -> bool:
         """

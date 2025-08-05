@@ -53,7 +53,7 @@ class OrderManager:
         """
         # TODO: Implement eBay API polling
         logger.info("Polling eBay API for new orders...")
-        new_orders = []
+        new_orders: List[Dict[str, Any]] = []
 
         # Placeholder implementation
         # This will be replaced with actual eBay API calls

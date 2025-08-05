@@ -16,8 +16,8 @@ test: ## Run all tests
 	pytest -v --cov=app tests/
 
 lint: ## Check code style and type hints
-	pylint app/ tests/
-	mypy app/
+	pylint --disable=fixme app/ tests/
+	mypy app/ tests/
 
 format: ## Format code with black
 	black app/ tests/

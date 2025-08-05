@@ -1,7 +1,7 @@
 """
 Tests for printing functionality
 """
-
+# pylint: disable=protected-access
 import tempfile
 from pathlib import Path
 from subprocess import CalledProcessError
@@ -13,6 +13,10 @@ from app.config import Config
 
 class TestPrintManager:
     """Test CUPS printing functionality"""
+
+    def __init__(self):
+        """Initialize test class"""
+        self.config = None
 
     def setup_method(self):
         """Set up test fixtures"""

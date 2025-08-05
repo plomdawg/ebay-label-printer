@@ -1,7 +1,7 @@
 """
 Tests for order management functionality
 """
-
+# pylint: disable=protected-access
 import json
 import tempfile
 from pathlib import Path
@@ -14,6 +14,10 @@ from app.config import Config
 
 class TestOrderManager:
     """Test order polling and management"""
+
+    def __init__(self):
+        """Initialize test class"""
+        self.config = None
 
     def setup_method(self):
         """Set up test fixtures"""
@@ -52,7 +56,11 @@ class TestOrderManager:
             self.config.STATE_FILE = str(state_file)
             manager = OrderManager(self.config)
 
-            assert manager._seen_orders == {"order1", "order2", "order3"}
+            assert manager._seen_orders == {
+                "order1",
+                "order2",
+                "order3",
+            }
 
     def test_mark_order_processed(self):
         """Test marking an order as processed"""

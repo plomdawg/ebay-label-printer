@@ -1,7 +1,7 @@
 """
 Tests for order management functionality
 """
-# pylint: disable=protected-access, attribute-defined-outside-init
+# pylint: disable=attribute-defined-outside-init, protected-access, unused-argument
 import json
 import tempfile
 from pathlib import Path

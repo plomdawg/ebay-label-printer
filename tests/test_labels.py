@@ -1,9 +1,8 @@
 """
 Tests for shipping label management
 """
-# pylint: disable=protected-access, attribute-defined-outside-init, assignment-from-none
+# pylint: disable=assignment-from-none, attribute-defined-outside-init, protected-access, unused-argument
 
-from unittest.mock import patch
 
 from app.labels import LabelManager
 

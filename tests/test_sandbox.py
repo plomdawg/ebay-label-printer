@@ -4,6 +4,7 @@ Test eBay sandbox integration
 This module contains tests for eBay API integration using sandbox environment.
 Run with: pytest tests/test_sandbox.py -v
 """
+# pylint: disable=redefined-outer-name, too-few-public-methods
 import os
 from unittest.mock import Mock, patch
 import pytest

@@ -57,28 +57,6 @@ services:
         python run.py
       "
 
-  # Optional: Add a database service for future order tracking
-  # postgres:
-  #   image: postgres:15-alpine
-  #   container_name: ebay-printer-db
-  #   environment:
-  #     - POSTGRES_DB=ebay_printer
-  #     - POSTGRES_USER=printer
-  #     - POSTGRES_PASSWORD=printer123
-  #   volumes:
-  #     - postgres_data:/var/lib/postgresql/data
-  #   ports:
-  #     - "5432:5432"
-
-  # Optional: Add Redis for caching and queues
-  # redis:
-  #   image: redis:7-alpine
-  #   container_name: ebay-printer-redis
-  #   ports:
-  #     - "6379:6379"
-  #   volumes:
-  #     - redis_data:/data
-
 # Named volumes for persistent data
 volumes:
   # postgres_data:

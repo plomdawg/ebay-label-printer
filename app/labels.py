@@ -187,20 +187,3 @@ class LabelManager(EbayClientMixin):
 
         logger.info("Created test PDF label at %s", pdf_path)
         return pdf_path
-
-    def refund_label(self, fulfillment_id: str) -> bool:
-        """
-        Refund a shipping label if needed
-
-        Args:
-            fulfillment_id: eBay fulfillment identifier
-
-        Returns:
-            True if refund successful, False otherwise
-        """
-        # TODO: Implement label refunding
-        logger.info("Refunding label for fulfillment %s", fulfillment_id)
-
-        # Placeholder implementation
-
-        return False

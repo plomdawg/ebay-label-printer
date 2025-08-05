@@ -14,7 +14,7 @@ from app.labels import LabelManager
 
 
 @pytest.fixture
-def sandbox_config():
+def config():
     """Create a test config for sandbox testing"""
     # Set environment variables for sandbox
     with patch.dict(
@@ -83,11 +83,10 @@ class TestEbayClientInitialization:
         assert hasattr(label_manager, "shopping_api")
 
 
-class TestSandboxOrderPolling:  # pylint: disable=too-few-public-methods
+class TestSandboxOrderPolling:
     """Test order polling in sandbox environment"""
 
-    @patch("app.orders.OrderManager.trading_api")
-    def test_poll_new_orders_with_mock_api(self, mocktrading_api, config):
+    def test_poll_new_orders_with_mock_api(self, config):
         """Test order polling with mocked Trading API response"""
         # Mock successful API response
         mock_response = Mock()
@@ -112,10 +111,12 @@ class TestSandboxOrderPolling:  # pylint: disable=too-few-public-methods
             }
         }
 
-        mocktrading_api.execute.return_value = mock_response
+        # Create mock trading API
+        mock_trading_api = Mock()
+        mock_trading_api.execute.return_value = mock_response
 
         order_manager = OrderManager(config)
-        order_manager.trading_api = mocktrading_api
+        order_manager.trading_api = mock_trading_api
 
         orders = order_manager.poll_new_orders()
 
@@ -124,8 +125,8 @@ class TestSandboxOrderPolling:  # pylint: disable=too-few-public-methods
         assert orders[0]["OrderID"] == "TEST-ORDER-123"
 
         # Verify API was called with correct parameters
-        mocktrading_api.execute.assert_called_once()
-        call_args = mocktrading_api.execute.call_args
+        mock_trading_api.execute.assert_called_once()
+        call_args = mock_trading_api.execute.call_args
         assert call_args[0][0] == "GetOrders"  # First argument should be "GetOrders"
         assert isinstance(call_args[0][1], dict)  # Second argument should be a dict
 
@@ -133,7 +134,7 @@ class TestSandboxOrderPolling:  # pylint: disable=too-few-public-methods
 class TestSandboxLabelCreation:
     """Test label creation in sandbox environment"""
 
-    def testcreate_test_label_pdf(self, config):
+    def test_create_test_label_pdf(self, config):
         """Test creation of test PDF labels for sandbox"""
         label_manager = LabelManager(config)
 

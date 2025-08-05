@@ -12,7 +12,7 @@ from app.orders import OrderManager
 class TestOrderManager:
     """Test order polling and management"""
 
-    def test_init_creates_manager(self, mock_config, _):
+    def test_init_creates_manager(self, mock_config, mock_ebay_apis):
         """Test that OrderManager initializes correctly"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "test_state.json"
@@ -22,7 +22,7 @@ class TestOrderManager:
             assert manager.config == mock_config
             assert isinstance(manager._seen_orders, set)
 
-    def test_load_seen_orders_empty_file(self, mock_config, _):
+    def test_load_seen_orders_empty_file(self, mock_config, mock_ebay_apis):
         """Test loading seen orders when state file doesn't exist"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "nonexistent.json"
@@ -31,7 +31,7 @@ class TestOrderManager:
             manager = OrderManager(mock_config)
             assert manager._seen_orders == set()
 
-    def test_load_seen_orders_existing_file(self, mock_config, _):
+    def test_load_seen_orders_existing_file(self, mock_config, mock_ebay_apis):
         """Test loading seen orders from existing state file"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "test_state.json"
@@ -50,7 +50,7 @@ class TestOrderManager:
                 "order3",
             }
 
-    def test_mark_order_processed(self, mock_config, _):
+    def test_mark_order_processed(self, mock_config, mock_ebay_apis):
         """Test marking an order as processed"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "test_state.json"
@@ -67,7 +67,7 @@ class TestOrderManager:
                 data = json.load(f)
                 assert "test_order_123" in data["seen_order_ids"]
 
-    def test_is_order_seen(self, mock_config, _):
+    def test_is_order_seen(self, mock_config, mock_ebay_apis):
         """Test checking if order has been seen"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "test_state.json"
@@ -82,7 +82,7 @@ class TestOrderManager:
             manager.mark_order_processed("new_order")
             assert manager.is_order_seen("new_order")
 
-    def test_poll_new_orders_placeholder(self, mock_config, _):
+    def test_poll_new_orders_placeholder(self, mock_config, mock_ebay_apis):
         """Test placeholder implementation of order polling"""
         with tempfile.TemporaryDirectory() as tmpdir:
             state_file = Path(tmpdir) / "test_state.json"

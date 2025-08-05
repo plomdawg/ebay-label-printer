@@ -17,13 +17,19 @@ class Config:
 
     def __init__(self) -> None:
         """Initialize configuration with environment variables"""
-        # eBay API Configuration
+        # eBay API Configuration - ebay-rest format
         self.EBAY_CLIENT_ID: Optional[str] = os.getenv("EBAY_CLIENT_ID")
         self.EBAY_CLIENT_SECRET: Optional[str] = os.getenv("EBAY_CLIENT_SECRET")
         self.EBAY_REFRESH_TOKEN: Optional[str] = os.getenv("EBAY_REFRESH_TOKEN")
-        self.EBAY_ENVIRONMENT: str = os.getenv(
-            "EBAY_ENVIRONMENT", "sandbox"
-        )  # sandbox or production
+
+        # ebay-rest specific configuration
+        self.EBAY_APPLICATION_CONFIG: str = os.getenv(
+            "EBAY_APPLICATION_CONFIG", "production_1"
+        )
+        self.EBAY_USER_CONFIG: str = os.getenv("EBAY_USER_CONFIG", "production_1")
+        self.EBAY_SITE_ID: str = os.getenv(
+            "EBAY_SITE_ID", "US"
+        )  # Market/site identifier
 
         # CUPS Printer Configuration
         self.CUPS_SERVER_URI: str = os.getenv("CUPS_SERVER_URI", "192.168.8.194")
@@ -47,9 +53,3 @@ class Config:
             self.EBAY_REFRESH_TOKEN,
         ]
         return all(field is not None for field in required_fields)
-
-    def get_ebay_api_base_url(self) -> str:
-        """Get the eBay API base URL based on environment"""
-        if self.EBAY_ENVIRONMENT == "production":
-            return "https://api.ebay.com"
-        return "https://api.sandbox.ebay.com"

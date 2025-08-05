@@ -28,8 +28,8 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - [x] Create basic configuration system
 
 ### Core Functionality
-- [ ] Implement order polling from eBay API (waiting on dev account)
-- [ ] Implement shipping label purchase 
+- [x] **Implement order polling from eBay API with ebay-rest** ✨ **COMPLETED**
+- [x] **Implement shipping label purchase with ebay-rest** ✨ **COMPLETED**
 - [x] **Implement packing slip PDF generation** ✨ **COMPLETED**
 - [x] **Implement CUPS printing functionality** ✨ **COMPLETED**
 - [x] **Multi-module integration testing** ✨ **COMPLETED**
@@ -44,19 +44,23 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - [x] Mock external dependencies for tests
 
 ## Current Engineer Notes
-- **NEW MILESTONE**: Multi-module integration testing now implemented! 🎉
+- **NEW MAJOR MILESTONE**: eBay REST API integration now implemented! 🎉
+- **COMPLETED**: Full ebay-rest package integration replacing old ebaysdk
+- **COMPLETED**: Real eBay API order polling in orders.py using ebay-rest
+- **COMPLETED**: Real eBay API label purchasing in labels.py using ebay-rest
+- **COMPLETED**: Configuration updated to support ebay-rest format
+- **COMPLETED**: PDF label download functionality with proper file handling
 - **COMPLETED**: Integration tests that generate real PDFs and test printing workflow
 - **COMPLETED**: End-to-end testing from packing slip generation → CUPS printing
 - **COMPLETED**: Multi-document printing tests with proper cleanup
-- **COMPLETED**: Error handling tests for failed PDF generation scenarios
-- **COMPLETED**: Enhanced test coverage from 82% to 83% (56 total tests)
 - Previous Branches: 
   - `feature/initial-project-structure` (merged to main)
   - `feature/containerization` (merged to main) 
   - `feature/comprehensive-test-coverage` (merged to main)
   - `feature/pdf-generation` (merged to main)
-- **Current Branch**: `feature/enhanced-cups-printing` (ready for PR)
-- **Status**: All tests passing, 10/10 code quality, integration testing fully functional
+  - `feature/enhanced-cups-printing` (merged to main)
+- **Current Branch**: `feature/ebay-rest-integration` (ready for PR)
+- **Status**: Core eBay API functionality fully implemented with ebay-rest package
 
 ## Files Created in First PR
 - `app/` directory with all core modules (config.py, orders.py, labels.py, packing.py, print.py)
@@ -88,15 +92,31 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - **Multi-module workflow tests** that generate real PDFs and test CUPS printing
 - **End-to-end testing** from packing slip generation through printing pipeline
 
+## Files Updated in Sixth PR (eBay REST Integration)
+- **Updated `requirements.txt`** - Replaced `ebaysdk==2.2.0` with `ebay-rest==1.0.14`
+- **Enhanced `app/config.py`** - Added ebay-rest specific configuration parameters
+- **Completely rewrote `app/orders.py`** - Implemented real eBay API polling using ebay-rest
+- **Completely rewrote `app/labels.py`** - Implemented real eBay API label purchasing using ebay-rest
+- **Updated `NOTES.md`** - Documented the major eBay REST API integration milestone
+
 ## Next Steps for Future PRs
-1. **Priority**: Implement actual eBay API integration in orders.py (when dev account is ready)
-2. Implement shipping label purchase integration with eBay/shipping providers
-3. Add comprehensive error handling and logging improvements throughout all modules
+1. **Priority**: Update test suite to properly mock ebay-rest API calls
+2. Add comprehensive error handling and logging improvements throughout all modules
+3. Add eBay API authentication token refresh handling
 4. Add web dashboard for monitoring order processing status
 5. Add email notifications for successful/failed processing
 6. Performance optimization and containerized deployment testing
 
 ## Technical Decisions Made
+
+### eBay REST API Integration Approach
+- **Package Choice**: Selected `ebay-rest==1.0.14` over the older `ebaysdk` for better modern API support
+- **Configuration**: Extended Config class to support ebay-rest application/user/site configuration pattern
+- **Error Handling**: Implemented comprehensive exception handling for both EbayError and general exceptions
+- **Order Polling**: Uses `sell_fulfillment_get_orders` with date filtering to find orders needing fulfillment
+- **Label Management**: Implements full workflow: create fulfillment → get label URL → download PDF
+- **File Organization**: Labels saved to `data/labels/` directory with order-specific naming
+- **API Initialization**: Lazy initialization of API clients with proper validation checking
 
 ### Containerization Approach
 - **Multi-stage Docker build**: Separate build and production stages for smaller final image

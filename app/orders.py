@@ -11,19 +11,22 @@ import json
 import logging
 from typing import List, Dict, Any, Set
 from pathlib import Path
+from datetime import datetime, timedelta
 
+from ebay_rest import Error as EbayError
 from .config import Config
+from .ebay_client import EbayClientMixin
 
 logger = logging.getLogger(__name__)
 
 
-class OrderManager:
+class OrderManager(EbayClientMixin):
     """Manages eBay order polling and tracking"""
 
     def __init__(self, config: Config):
-        self.config = config
         self.state_file = Path(config.STATE_FILE)
         self._seen_orders: Set[str] = self._load_seen_orders()
+        super().__init__(config)
 
     def _load_seen_orders(self) -> Set[str]:
         """Load previously seen order IDs from state file"""
@@ -51,13 +54,49 @@ class OrderManager:
         Returns:
             List of new order dictionaries
         """
-        # TODO: Implement eBay API polling
         logger.info("Polling eBay API for new orders...")
         new_orders: List[Dict[str, Any]] = []
 
-        # Placeholder implementation
-        # This will be replaced with actual eBay API calls
+        if not self.api:
+            logger.warning("eBay API not initialized, returning empty list")
+            return new_orders
 
+        try:
+            # Get orders from the last 24 hours to catch any recent orders
+            from_date = datetime.now() - timedelta(days=1)
+
+            # Use the sell_fulfillment_get_orders method from ebay-rest
+            # Note: This searches for orders that need fulfillment
+            orders_response = self.api.sell_fulfillment_get_orders(
+                filter_creation_date_range_from=from_date.isoformat() + "Z",
+                limit=50,  # Reasonable batch size
+            )
+
+            for order_record in orders_response:
+                if "record" not in order_record:
+                    continue
+
+                order = order_record["record"]
+                order_id = order.get("orderId", "")
+
+                # Skip if we've already processed this order
+                if self.is_order_seen(order_id):
+                    continue
+
+                # Only process orders that are ready to ship
+                order_fulfillment_status = order.get(
+                    "orderFulfillmentStatus", "NOT_STARTED"
+                )
+                if order_fulfillment_status in ["NOT_STARTED", "IN_PROGRESS"]:
+                    new_orders.append(order)
+                    logger.info("Found new order %s", order_id)
+
+        except EbayError as e:
+            logger.error("eBay API error while polling orders: %s", e)
+        except (OSError, ValueError, KeyError) as e:
+            logger.error("Unexpected error while polling orders: %s", e)
+
+        logger.info("Found %d new orders", len(new_orders))
         return new_orders
 
     def mark_order_processed(self, order_id: str) -> None:

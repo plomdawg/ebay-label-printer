@@ -1,7 +1,7 @@
 # Core dependencies for eBay Label Printer
 
 # eBay API integration
-ebaysdk==2.2.0
+ebay-rest==1.0.14
 requests==2.31.0
 
 # PDF generation

@@ -15,7 +15,6 @@ class TestConfig:
         """Test that default configuration values are set correctly"""
         config = Config()
 
-        assert config.EBAY_ENVIRONMENT == "sandbox"
         assert config.CUPS_SERVER_URI == "192.168.8.194"
         assert config.PRINTER_NAME == "Thermal-Printer"
         assert config.POLLING_INTERVAL == 300
@@ -29,7 +28,6 @@ class TestConfig:
             "EBAY_CLIENT_ID": "test_client_id",
             "EBAY_CLIENT_SECRET": "test_client_secret",
             "EBAY_REFRESH_TOKEN": "test_refresh_token",
-            "EBAY_ENVIRONMENT": "production",
             "CUPS_SERVER_URI": "192.168.1.100",
             "PRINTER_NAME": "test_printer",
             "POLLING_INTERVAL": "600",
@@ -45,7 +43,7 @@ class TestConfig:
         assert config.EBAY_CLIENT_ID == "test_client_id"
         assert config.EBAY_CLIENT_SECRET == "test_client_secret"
         assert config.EBAY_REFRESH_TOKEN == "test_refresh_token"
-        assert config.EBAY_ENVIRONMENT == "production"
+
         assert config.CUPS_SERVER_URI == "192.168.1.100"
         assert config.PRINTER_NAME == "test_printer"
         assert config.POLLING_INTERVAL == 600

@@ -56,20 +56,20 @@ def main():
         logger.warning("Could not connect to printer. Continuing in dry-run mode.")
         config.DRY_RUN = True
     
-    logger.info(f"Application started. Polling interval: {config.POLLING_INTERVAL}s")
-    logger.info(f"Dry run mode: {config.DRY_RUN}")
+    logger.info("Application started. Polling interval: %ds", config.POLLING_INTERVAL)
+    logger.info("Dry run mode: %s", config.DRY_RUN)
     
     try:
         while True:
             process_orders(order_manager, label_manager, packing_generator, print_manager)
             
-            logger.info(f"Sleeping for {config.POLLING_INTERVAL} seconds...")
+            logger.info("Sleeping for %ds...", config.POLLING_INTERVAL)
             time.sleep(config.POLLING_INTERVAL)
             
     except KeyboardInterrupt:
         logger.info("Application stopped by user")
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+        logger.error("Unexpected error: %s", e)
         sys.exit(1)
 
 
@@ -85,28 +85,28 @@ def process_orders(order_manager, label_manager, packing_generator, print_manage
             logger.info("No new orders found")
             return
         
-        logger.info(f"Found {len(new_orders)} new orders")
+        logger.info("Found %d new orders", len(new_orders))
         
         for order in new_orders:
             order_id = order.get('order_id', 'unknown')
-            logger.info(f"Processing order {order_id}")
+            logger.info("Processing order %s", order_id)
             
             try:
                 # Skip if already processed
                 if order_manager.is_order_seen(order_id):
-                    logger.info(f"Order {order_id} already processed, skipping")
+                    logger.info("Order %s already processed, skipping", order_id)
                     continue
                 
                 # Buy shipping label
                 label_info = label_manager.buy_shipping_label(order)
                 if not label_info:
-                    logger.error(f"Failed to buy label for order {order_id}")
+                    logger.error("Failed to buy label for order %s", order_id)
                     continue
                 
                 # Generate packing slip
                 packing_slip_path = packing_generator.generate_packing_slip(order)
                 if not packing_slip_path:
-                    logger.error(f"Failed to generate packing slip for order {order_id}")
+                    logger.error("Failed to generate packing slip for order %s", order_id)
                     continue
                 
                 # Print documents
@@ -115,16 +115,16 @@ def process_orders(order_manager, label_manager, packing_generator, print_manage
                 
                 if success:
                     order_manager.mark_order_processed(order_id)
-                    logger.info(f"Successfully processed order {order_id}")
+                    logger.info("Successfully processed order %s", order_id)
                 else:
-                    logger.error(f"Failed to print documents for order {order_id}")
+                    logger.error("Failed to print documents for order %s", order_id)
                 
             except Exception as e:
-                logger.error(f"Error processing order {order_id}: {e}")
+                logger.error("Error processing order %s: %s", order_id, e)
                 continue
                 
     except Exception as e:
-        logger.error(f"Error during order processing: {e}")
+        logger.error("Error during order processing: %s", e)
 
 
 if __name__ == "__main__":

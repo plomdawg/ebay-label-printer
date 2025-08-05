@@ -5,3 +5,8 @@
 .env
 .coverage
 ebay_printer.log
+
+# Generated PDFs
+*.pdf
+data/packing_slips/
+data/labels/

@@ -3,6 +3,8 @@ Tests for packing slip generation
 """
 # pylint: disable=protected-access, attribute-defined-outside-init, assignment-from-none
 
+import base64
+import binascii
 from unittest.mock import patch
 
 from app.config import Config
@@ -69,10 +71,9 @@ class TestPackingSlipGenerator:
         assert result != ""
         assert isinstance(result, str)
         # Should be valid base64
-        import base64
         try:
             base64.b64decode(result)
-        except Exception:
+        except (ValueError, binascii.Error):
             assert False, "Result should be valid base64"
 
     def test_generate_qr_code_with_empty_order_id(self):

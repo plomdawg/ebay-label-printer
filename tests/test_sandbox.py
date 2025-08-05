@@ -5,8 +5,8 @@ This module contains tests for eBay API integration using sandbox environment.
 Run with: pytest tests/test_sandbox.py -v
 """
 import os
-import pytest
 from unittest.mock import Mock, patch
+import pytest
 
 from app.config import Config
 from app.orders import OrderManager
@@ -38,17 +38,14 @@ def sandbox_config():
 class TestSandboxConfiguration:
     """Test sandbox configuration setup"""
 
-    def test_sandbox_environment_detection(self, sandbox_config):
+    def test_sandbox_environment_detection(self, config):
         """Test that sandbox environment is properly detected"""
-        assert sandbox_config.EBAY_ENVIRONMENT == "sandbox"
-        assert sandbox_config.current_client_id == sandbox_config.EBAY_SANDBOX_CLIENT_ID
-        assert (
-            sandbox_config.current_client_secret
-            == sandbox_config.EBAY_SANDBOX_CLIENT_SECRET
-        )
-        assert sandbox_config.current_dev_id == sandbox_config.EBAY_SANDBOX_DEV_ID
+        assert config.EBAY_ENVIRONMENT == "sandbox"
+        assert config.current_client_id == config.EBAY_SANDBOX_CLIENT_ID
+        assert config.current_client_secret == config.EBAY_SANDBOX_CLIENT_SECRET
+        assert config.current_dev_id == config.EBAY_SANDBOX_DEV_ID
 
-    def test_sandbox_validation(self, sandbox_config):
+    def test_sandbox_validation(self, config):
         """Test configuration validation with sandbox credentials"""
         # Should be valid if we have the sandbox environment variables set
         if (
@@ -56,29 +53,29 @@ class TestSandboxConfiguration:
             and os.getenv("EBAY_SANDBOX_CLIENT_SECRET")
             and os.getenv("EBAY_SANDBOX_DEV_ID")
         ):
-            assert sandbox_config.validate() is True
+            assert config.validate() is True
         else:
             # If no real credentials, should still create config but validation may fail
-            assert isinstance(sandbox_config.validate(), bool)
+            assert isinstance(config.validate(), bool)
 
 
 class TestEbayClientInitialization:
     """Test eBay API client initialization in sandbox"""
 
-    def test_order_manager_initialization(self, sandbox_config):
+    def test_order_manager_initialization(self, config):
         """Test OrderManager initialization with sandbox config"""
-        order_manager = OrderManager(sandbox_config)
-        assert order_manager.config == sandbox_config
+        order_manager = OrderManager(config)
+        assert order_manager.config == config
 
         # Check if APIs are initialized (may be None if no valid credentials)
         assert hasattr(order_manager, "trading_api")
         assert hasattr(order_manager, "finding_api")
         assert hasattr(order_manager, "shopping_api")
 
-    def test_label_manager_initialization(self, sandbox_config):
+    def test_label_manager_initialization(self, config):
         """Test LabelManager initialization with sandbox config"""
-        label_manager = LabelManager(sandbox_config)
-        assert label_manager.config == sandbox_config
+        label_manager = LabelManager(config)
+        assert label_manager.config == config
 
         # Check if APIs are initialized (may be None if no valid credentials)
         assert hasattr(label_manager, "trading_api")
@@ -90,7 +87,7 @@ class TestSandboxOrderPolling:
     """Test order polling in sandbox environment"""
 
     @patch("app.orders.OrderManager.trading_api")
-    def test_poll_new_orders_with_mock_api(self, mock_trading_api, sandbox_config):
+    def test_poll_new_orders_with_mock_api(self, mock_trading_api, config):
         """Test order polling with mocked Trading API response"""
         # Mock successful API response
         mock_response = Mock()
@@ -117,7 +114,7 @@ class TestSandboxOrderPolling:
 
         mock_trading_api.execute.return_value = mock_response
 
-        order_manager = OrderManager(sandbox_config)
+        order_manager = OrderManager(config)
         order_manager._trading_api = mock_trading_api
 
         orders = order_manager.poll_new_orders()
@@ -136,9 +133,9 @@ class TestSandboxOrderPolling:
 class TestSandboxLabelCreation:
     """Test label creation in sandbox environment"""
 
-    def test_create_test_label_pdf(self, sandbox_config):
+    def test_create_test_label_pdf(self, config):
         """Test creation of test PDF labels for sandbox"""
-        label_manager = LabelManager(sandbox_config)
+        label_manager = LabelManager(config)
 
         # Test the internal PDF creation method
         test_order_id = "TEST-ORDER-456"
@@ -154,9 +151,9 @@ class TestSandboxLabelCreation:
             # Clean up
             pdf_path.unlink()
 
-    def test_buy_shipping_label_sandbox(self, sandbox_config):
+    def test_buy_shipping_label_sandbox(self, config):
         """Test buying shipping labels in sandbox mode"""
-        label_manager = LabelManager(sandbox_config)
+        label_manager = LabelManager(config)
 
         # Mock order data
         test_order = {
@@ -200,9 +197,9 @@ class TestSandboxIntegration:
         ),
         reason="Sandbox credentials not available",
     )
-    def test_real_api_connection(self, sandbox_config):
+    def test_real_api_connection(self, config):
         """Test actual connection to eBay sandbox APIs"""
-        order_manager = OrderManager(sandbox_config)
+        order_manager = OrderManager(config)
 
         # Should have valid API clients if credentials are correct
         assert order_manager.trading_api is not None

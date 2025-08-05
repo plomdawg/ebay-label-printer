@@ -5,6 +5,8 @@ Integration tests for multi-module workflows
 
 from unittest.mock import Mock, patch
 
+import pytest
+
 from app.config import Config
 from app.packing import PackingSlipGenerator
 from app.print import PrintManager
@@ -16,12 +18,12 @@ class TestPackingAndPrintingIntegration:
     def setup_method(self):
         """Set up test fixtures"""
         self.config = Mock(spec=Config)
-        self.config.CUPS_SERVER_URI = "192.168.8.194"
-        self.config.PRINTER_NAME = "thermal_printer"
         self.config.DRY_RUN = False
 
         self.packing_generator = PackingSlipGenerator(self.config)
         self.print_manager = PrintManager(self.config)
+        self.config.CUPS_SERVER_URI = "192.168.8.194"
+        self.config.PRINTER_NAME = "Thermal-Printer"
 
         # Sample order data for testing
         self.test_order = {
@@ -142,3 +144,30 @@ class TestPackingAndPrintingIntegration:
         # Test the complete workflow
         result = process_order_for_packing_and_printing(self.test_order)
         assert result is True
+
+    @pytest.mark.print
+    def test_actual_printer_print(self):
+        """Test actual printing to hardware - only run manually with -m print"""
+        # Use real config values (not mocked)
+        real_config = Config()
+        real_print_manager = PrintManager(real_config)
+
+        # Generate a real PDF to print
+        pdf_path = self.packing_generator.generate_packing_slip(self.test_order)
+        assert pdf_path is not None
+        assert pdf_path.exists()
+
+        print(
+            f"\n🖨️  About to send actual print job to printer: {real_config.PRINTER_NAME}"
+        )
+        print(f"📄 Printing file: {pdf_path}")
+        print("⚠️  Make sure your printer is connected and ready!")
+
+        # Actually print to hardware
+        result = real_print_manager.print_documents([pdf_path])
+
+        # Clean up the generated PDF
+        pdf_path.unlink()
+
+        assert result is True
+        print("✅ Print job sent successfully!")

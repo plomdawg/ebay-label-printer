@@ -58,9 +58,13 @@ class PackingSlipGenerator:
             output_dir.mkdir(parents=True, exist_ok=True)
             pdf_path = output_dir / f"packing_slip_{order_id}.pdf"
 
-            # Create PDF document
+            # Create PDF document with 4"x6" page size
+            custom_pagesize = (
+                4 * reportlab.lib.units.inch,
+                6 * reportlab.lib.units.inch,
+            )
             doc = reportlab.platypus.SimpleDocTemplate(
-                str(pdf_path), pagesize=reportlab.lib.pagesizes.letter
+                str(pdf_path), pagesize=custom_pagesize
             )
             story = self._build_pdf_content(order_data, order_id)
 

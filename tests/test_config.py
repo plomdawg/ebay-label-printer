@@ -17,7 +17,7 @@ class TestConfig:
 
         assert config.EBAY_ENVIRONMENT == "sandbox"
         assert config.CUPS_SERVER_URI == "192.168.8.194"
-        assert config.PRINTER_NAME == "default"
+        assert config.PRINTER_NAME == "Thermal-Printer"
         assert config.POLLING_INTERVAL == 300
         assert config.DRY_RUN is False
         assert config.LOG_LEVEL == "INFO"

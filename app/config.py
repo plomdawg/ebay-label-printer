@@ -27,7 +27,7 @@ class Config:
 
         # CUPS Printer Configuration
         self.CUPS_SERVER_URI: str = os.getenv("CUPS_SERVER_URI", "192.168.8.194")
-        self.PRINTER_NAME: str = os.getenv("PRINTER_NAME", "default")
+        self.PRINTER_NAME: str = os.getenv("PRINTER_NAME", "Thermal-Printer")
 
         # Application Settings
         self.POLLING_INTERVAL: int = int(

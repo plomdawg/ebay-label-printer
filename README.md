@@ -20,6 +20,23 @@ make build
 make run
 ```
 
+## Hardware Testing
+
+Tests that interact with actual printers are available but **skipped by default**. The `test_actual_printer_hardware` test generates and prints a real packing slip for order "TEST-001".
+
+**Run hardware tests:**
+```bash
+pytest -m print
+```
+
+**Prerequisites:**
+- Printer connected and ready (`lpstat -p` to check status)
+- CUPS running (`sudo systemctl status cups`)
+- Paper/labels loaded
+- Correct `CUPS_SERVER_URI` and `PRINTER_NAME` in config
+
+⚠️ **Warning:** Hardware tests will actually print pages!
+
 ## Architecture
 
 - **Orders**: Poll eBay API for new orders

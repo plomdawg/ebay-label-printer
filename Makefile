@@ -12,6 +12,9 @@ install: ## Install dependencies
 test: ## Run all tests
 	pytest -v --cov=app tests/
 
+test-print: ## Run print tests
+	pytest -v --cov=app tests/ -m print
+
 lint: ## Check code style and type hints
 	pylint --disable=fixme app/ tests/
 	mypy app/ tests/

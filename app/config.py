@@ -28,6 +28,9 @@ class Config:
         # CUPS Printer Configuration
         self.CUPS_SERVER_URI: str = os.getenv("CUPS_SERVER_URI", "192.168.8.194")
         self.PRINTER_NAME: str = os.getenv("PRINTER_NAME", "default")
+        self.PRINT_COPIES: int = int(os.getenv("PRINT_COPIES", "1"))
+        self.PRINT_DUPLEX: bool = os.getenv("PRINT_DUPLEX", "false").lower() == "true"
+        self.PAPER_SIZE: str = os.getenv("PAPER_SIZE", "Letter")  # Letter, A4, etc.
 
         # Application Settings
         self.POLLING_INTERVAL: int = int(

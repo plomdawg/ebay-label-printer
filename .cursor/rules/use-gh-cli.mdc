@@ -1,0 +1,9 @@
+---
+description: Use github cli after making changes.
+alwaysApply: false
+---
+Use the GitHub CLI (gh) to interact with GitHub.
+
+Create detailed commit messages and use the gh cli to create PRs.
+
+Explain the changes and testing done in the PR description.

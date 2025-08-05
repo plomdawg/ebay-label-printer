@@ -13,7 +13,7 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 ## Key Components to Build
 1. `orders.py` - eBay API order polling
 2. `labels.py` - Shipping label buying/refunding  
-3. `packing.py` - QR-based packing slip generation
+3. `packing.py` - Packing slip generation
 4. `print.py` - Print to CUPS server
 5. `config.py` - Configuration management
 
@@ -30,7 +30,7 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 ### Core Functionality
 - [ ] Implement order polling from eBay API (waiting on dev account)
 - [ ] Implement shipping label purchase 
-- [x] **Implement packing slip PDF generation with QR codes** ✨ **COMPLETED**
+- [x] **Implement packing slip PDF generation** ✨ **COMPLETED**
 - [x] **Implement CUPS printing functionality** ✨ **COMPLETED**
 - [x] **Multi-module integration testing** ✨ **COMPLETED**
 - [ ] Add comprehensive error handling and logging
@@ -54,7 +54,7 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
   - `feature/initial-project-structure` (merged to main)
   - `feature/containerization` (merged to main) 
   - `feature/comprehensive-test-coverage` (merged to main)
-  - `feature/pdf-qr-generation` (merged to main)
+  - `feature/pdf-generation` (merged to main)
 - **Current Branch**: `feature/enhanced-cups-printing` (ready for PR)
 - **Status**: All tests passing, 10/10 code quality, integration testing fully functional
 
@@ -77,9 +77,9 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 - `tests/test_packing.py` with 18 comprehensive tests for packing slip generation
 - Improved overall test coverage from 59% to 86%
 
-## Files Created in Fourth PR (PDF/QR Generation)
+## Files Created in Fourth PR (PDF Generation)
 - **Enhanced `app/packing.py`** with full PDF generation using ReportLab
-- **Enhanced `app/packing.py`** with QR code generation using qrcode library
+
 - **Added `docker-compose.yml`** for easier local development with volumes and environment variables
 - **Updated all packing tests** to match new real implementations instead of placeholders
 

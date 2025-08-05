@@ -3,8 +3,6 @@ Tests for packing slip generation
 """
 # pylint: disable=protected-access, attribute-defined-outside-init, assignment-from-none
 
-import base64
-import binascii
 from unittest.mock import patch
 
 from app.config import Config
@@ -61,29 +59,6 @@ class TestPackingSlipGenerator:
 
         result = self.packing_generator.generate_packing_slip(order_data)
         assert result is None
-
-    def test_generate_qr_code_with_valid_order_id(self):
-        """Test generating QR code with valid order ID"""
-        order_id = "12345-67890"
-
-        # Should return base64 encoded QR code image
-        result = self.packing_generator._generate_qr_code(order_id)
-        assert result != ""
-        assert isinstance(result, str)
-        # Should be valid base64
-        try:
-            base64.b64decode(result)
-        except (ValueError, binascii.Error):
-            assert False, "Result should be valid base64"
-
-    def test_generate_qr_code_with_empty_order_id(self):
-        """Test generating QR code with empty order ID"""
-        order_id = ""
-
-        # Should still generate QR code, even with empty order ID
-        result = self.packing_generator._generate_qr_code(order_id)
-        assert result != ""
-        assert isinstance(result, str)
 
     def test_format_address_with_valid_data(self):
         """Test formatting address with valid address data"""
@@ -160,22 +135,6 @@ class TestPackingSlipGenerator:
             "Generating packing slip for order %s", "unknown"
         )
 
-    @patch("app.packing.logger")
-    def test_generate_qr_code_logs_debug(self, mock_logger):
-        """Test that _generate_qr_code logs debug information"""
-        order_id = "12345-67890"
-
-        self.packing_generator._generate_qr_code(order_id)
-
-        # Should call debug twice: once at start, once on success
-        assert mock_logger.debug.call_count == 2
-        mock_logger.debug.assert_any_call(
-            "Generating QR code for order %s", "12345-67890"
-        )
-        mock_logger.debug.assert_any_call(
-            "Successfully generated QR code for order %s", "12345-67890"
-        )
-
     def test_config_dependency(self):
         """Test that PackingSlipGenerator properly uses the config object"""
         # Test that the generator stores and can access config
@@ -188,12 +147,10 @@ class TestPackingSlipGenerator:
 
         # Should be able to perform multiple operations
         result1 = self.packing_generator.generate_packing_slip(order_data)
-        result2 = self.packing_generator._generate_qr_code("12345-67890")
-        result3 = self.packing_generator.validate_order_data(order_data)
+        result2 = self.packing_generator.validate_order_data(order_data)
 
         assert result1 is not None  # Should return Path to PDF
-        assert result2 != ""  # Should return base64 QR code
-        assert result3 is True  # Should validate successfully
+        assert result2 is True  # Should validate successfully
 
     def test_required_fields_validation(self):
         """Test that validate_order_data checks the correct required fields"""

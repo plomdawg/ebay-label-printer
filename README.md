@@ -41,5 +41,5 @@ pytest -m print
 
 - **Orders**: Poll eBay API for new orders
 - **Labels**: Purchase shipping labels via eBay Fulfillment API  
-- **Packing**: Generate QR-coded packing slips as PDFs
+- **Packing**: Generate packing slips as PDFs
 - **Print**: Send PDFs to CUPS server

@@ -6,7 +6,7 @@ Automate the eBay order fulfillment pipeline:
 
 * Detect new orders from eBay.
 * Automatically buy shipping labels for them.
-* Print both the label and a packing slip (with a QR code) to a remote CUPS printer.
+* Print both the label and a packing slip to a remote CUPS printer.
 
 ---
 
@@ -25,7 +25,7 @@ eBay Order Placed → Poll API → Buy Label → Generate Packing Slip → Print
 
   * `orders`: Detect new eBay orders.
   * `labels`: Handle label purchase + refund if needed.
-  * `packing`: Generate a QR-encoded packing slip.
+  * `packing`: Generate a packing slip.
   * `print`: Send PDFs to CUPS printer.
 * **Test-first development** with Pytest.
 * **CI/CD** via GitHub Actions.
@@ -51,7 +51,7 @@ ebay-shipper/
 │   ├── __init__.py
 │   ├── orders.py            # eBay API order polling
 │   ├── labels.py            # Shipping label buying/refunding
-│   ├── packing.py           # QR-based packing slip generation
+│   ├── packing.py           # Packing slip generation
 │   ├── print.py             # Print to CUPS server
 │   └── config.py            # eBay tokens, printer IP, etc.
 ├── tests/
@@ -96,9 +96,9 @@ ebay-shipper/
   * eBay order ID
   * Quantity
   * Shipping address
-  * QR code linking to the order
+  
 * Use `reportlab` or `WeasyPrint` for PDF generation.
-* Use `qrcode` Python package for QR generation.
+
 
 ### 4. Print (`print.py`)
 

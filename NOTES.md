@@ -59,8 +59,8 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
   - `feature/comprehensive-test-coverage` (merged to main)
   - `feature/pdf-generation` (merged to main)
   - `feature/enhanced-cups-printing` (merged to main)
-- **Current Branch**: `feature/ebay-rest-integration` (ready for PR)
-- **Status**: Core eBay API functionality fully implemented with ebay-rest package
+- **Current Branch**: `feature/switch-to-ebaysdk-sandbox` (PR #9 created)
+- **Status**: Successfully switched from ebay-rest to ebaysdk with full sandbox support
 
 ## Files Created in First PR
 - `app/` directory with all core modules (config.py, orders.py, labels.py, packing.py, print.py)

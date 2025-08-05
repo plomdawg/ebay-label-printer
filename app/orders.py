@@ -11,19 +11,22 @@ import json
 import logging
 from typing import List, Dict, Any, Set
 from pathlib import Path
+from datetime import datetime, timedelta
 
+from ebaysdk.exception import ConnectionError as EbayConnectionError
 from .config import Config
+from .ebay_client import EbayClientMixin
 
 logger = logging.getLogger(__name__)
 
 
-class OrderManager:
+class OrderManager(EbayClientMixin):
     """Manages eBay order polling and tracking"""
 
     def __init__(self, config: Config):
-        self.config = config
         self.state_file = Path(config.STATE_FILE)
         self._seen_orders: Set[str] = self._load_seen_orders()
+        super().__init__(config)
 
     def _load_seen_orders(self) -> Set[str]:
         """Load previously seen order IDs from state file"""
@@ -51,13 +54,67 @@ class OrderManager:
         Returns:
             List of new order dictionaries
         """
-        # TODO: Implement eBay API polling
         logger.info("Polling eBay API for new orders...")
         new_orders: List[Dict[str, Any]] = []
 
-        # Placeholder implementation
-        # This will be replaced with actual eBay API calls
+        if not self.trading_api:
+            logger.warning("eBay Trading API not initialized, returning empty list")
+            return new_orders
 
+        try:
+            # Get orders from the last 7 days to catch any recent orders
+            from_date = datetime.now() - timedelta(days=7)
+            to_date = datetime.now()
+
+            # Use GetOrders call from Trading API
+            api_request = {
+                "RequesterCredentials": {
+                    "eBayAuthToken": self.config.EBAY_REFRESH_TOKEN or "TEST_TOKEN"
+                },
+                "CreateTimeFrom": from_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                "CreateTimeTo": to_date.strftime("%Y-%m-%dT%H:%M:%S.000Z"),
+                "OrderStatus": "Active",  # Get active orders that need fulfillment
+                "ListingType": "FixedPriceItem",  # Focus on Buy It Now items
+                "Pagination": {"EntriesPerPage": 50, "PageNumber": 1},
+            }
+
+            response = self.trading_api.execute("GetOrders", api_request)
+
+            if response.reply.Ack in ["Success", "Warning"]:
+                orders_array = response.dict().get("OrderArray", {})
+                orders = orders_array.get("Order", [])
+
+                # Handle single order case (not in array)
+                if isinstance(orders, dict):
+                    orders = [orders]
+
+                for order in orders:
+                    order_id = order.get("OrderID", "")
+
+                    # Skip if we've already processed this order
+                    if self.is_order_seen(order_id):
+                        continue
+
+                    # Check if order needs fulfillment
+                    order_status = order.get("OrderStatus", "")
+                    shipped_time = order.get("ShippedTime")
+
+                    # Only process orders that are completed but not yet shipped
+                    if order_status == "Completed" and not shipped_time:
+                        new_orders.append(order)
+                        logger.info("Found new order %s", order_id)
+            else:
+                logger.error(
+                    "eBay API returned error: %s",
+                    response.dict().get("Errors", "Unknown error"),
+                )
+
+        except EbayConnectionError as e:
+            logger.error("eBay API connection error while polling orders: %s", e)
+        except (OSError, ValueError, KeyError) as e:
+            logger.error("Unexpected error while polling orders: %s", e)
+
+        logger.info("Found %d new orders", len(new_orders))
         return new_orders
 
     def mark_order_processed(self, order_id: str) -> None:

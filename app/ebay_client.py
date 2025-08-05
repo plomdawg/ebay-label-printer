@@ -18,7 +18,7 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
 
     def __init__(self, config: Config):
         self.config = config
-        self._trading_api = None
+        self.trading_api = None
         self._finding_api = None
         self._shopping_api = None
         self._init_ebay_apis()
@@ -34,7 +34,7 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
             config_dict = self._get_api_config()
 
             # Initialize Trading API (for orders and selling)
-            self._trading_api = TradingAPI(config_file=None, **config_dict)
+            self.trading_api = TradingAPI(config_file=None, **config_dict)
 
             # Initialize Finding API (for searching)
             self._finding_api = FindingAPI(config_file=None, **config_dict)
@@ -48,12 +48,12 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
             )
         except EbayConnectionError as e:
             logger.error("Failed to initialize eBay APIs: %s", e)
-            self._trading_api = None
+            self.trading_api = None
             self._finding_api = None
             self._shopping_api = None
         except (OSError, ValueError) as e:
             logger.error("Unexpected error initializing eBay APIs: %s", e)
-            self._trading_api = None
+            self.trading_api = None
             self._finding_api = None
             self._shopping_api = None
 
@@ -75,7 +75,7 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
     @property
     def trading_api(self) -> Optional[TradingAPI]:
         """Get the eBay Trading API client"""
-        return self._trading_api
+        return self.trading_api
 
     @property
     def finding_api(self) -> Optional[FindingAPI]:

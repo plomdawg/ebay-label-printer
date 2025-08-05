@@ -2,8 +2,8 @@
 Pytest configuration and fixtures for eBay Label Printer tests
 """
 
-import pytest
 from unittest.mock import Mock, patch
+import pytest
 from app.config import Config
 
 

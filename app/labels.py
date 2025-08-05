@@ -11,6 +11,10 @@ import logging
 from typing import Dict, Any, Optional
 from pathlib import Path
 
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter, landscape
+
 import requests
 
 from ebaysdk.exception import ConnectionError as EbayConnectionError
@@ -80,7 +84,7 @@ class LabelManager(EbayClientMixin):
             # So we'll create a mock PDF for testing
             if self.config.EBAY_ENVIRONMENT == "sandbox":
                 # Create a simple test PDF
-                pdf_path = self._create_test_label_pdf(order_id, mock_tracking_number)
+                pdf_path = self.create_test_label_pdf(order_id, mock_tracking_number)
                 if pdf_path:
                     label_data["pdf_path"] = str(pdf_path)
                     label_data["label_url"] = f"mock://test_label_{order_id}.pdf"
@@ -142,7 +146,7 @@ class LabelManager(EbayClientMixin):
 
         return None
 
-    def _create_test_label_pdf(
+    def create_test_label_pdf(
         self, order_id: str, tracking_number: str
     ) -> Optional[Path]:
         """
@@ -153,44 +157,36 @@ class LabelManager(EbayClientMixin):
             tracking_number: Mock tracking number
 
         Returns:
-            Path to created test PDF, or None if failed
+            Path to created test PDF or raises an exception if failed
         """
-        try:
-            from reportlab.pdfgen import canvas
-            from reportlab.lib.pagesizes import letter, landscape
+        # Create data directory if it doesn't exist
+        data_dir = Path("data/labels")
+        data_dir.mkdir(parents=True, exist_ok=True)
 
-            # Create data directory if it doesn't exist
-            data_dir = Path("data/labels")
-            data_dir.mkdir(parents=True, exist_ok=True)
+        # Generate filename
+        pdf_filename = f"test_shipping_label_{order_id}.pdf"
+        pdf_path = data_dir / pdf_filename
 
-            # Generate filename
-            pdf_filename = f"test_shipping_label_{order_id}.pdf"
-            pdf_path = data_dir / pdf_filename
+        # Create simple test PDF
+        c = canvas.Canvas(str(pdf_path), pagesize=landscape(letter))
 
-            # Create simple test PDF
-            c = canvas.Canvas(str(pdf_path), pagesize=landscape(letter))
+        # Add test label content
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(50, 500, "TEST SHIPPING LABEL")
+        c.setFont("Helvetica", 12)
+        c.drawString(50, 470, f"Order ID: {order_id}")
+        c.drawString(50, 450, f"Tracking Number: {tracking_number}")
+        c.drawString(50, 430, "Carrier: USPS Priority Mail")
+        c.drawString(50, 410, "*** SANDBOX TEST LABEL ***")
+        c.drawString(50, 390, "This is not a real shipping label")
 
-            # Add test label content
-            c.setFont("Helvetica-Bold", 16)
-            c.drawString(50, 500, "TEST SHIPPING LABEL")
-            c.setFont("Helvetica", 12)
-            c.drawString(50, 470, f"Order ID: {order_id}")
-            c.drawString(50, 450, f"Tracking Number: {tracking_number}")
-            c.drawString(50, 430, "Carrier: USPS Priority Mail")
-            c.drawString(50, 410, "*** SANDBOX TEST LABEL ***")
-            c.drawString(50, 390, "This is not a real shipping label")
+        # Add a border
+        c.rect(30, 370, 500, 150, stroke=1, fill=0)
 
-            # Add a border
-            c.rect(30, 370, 500, 150, stroke=1, fill=0)
+        c.save()
 
-            c.save()
-
-            logger.info("Created test PDF label at %s", pdf_path)
-            return pdf_path
-
-        except Exception as e:
-            logger.error("Failed to create test PDF label: %s", e)
-            return None
+        logger.info("Created test PDF label at %s", pdf_path)
+        return pdf_path
 
     def refund_label(self, fulfillment_id: str) -> bool:
         """

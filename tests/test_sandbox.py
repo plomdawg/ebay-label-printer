@@ -83,11 +83,11 @@ class TestEbayClientInitialization:
         assert hasattr(label_manager, "shopping_api")
 
 
-class TestSandboxOrderPolling:
+class TestSandboxOrderPolling:  # pylint: disable=too-few-public-methods
     """Test order polling in sandbox environment"""
 
     @patch("app.orders.OrderManager.trading_api")
-    def test_poll_new_orders_with_mock_api(self, mock_trading_api, config):
+    def test_poll_new_orders_with_mock_api(self, mocktrading_api, config):
         """Test order polling with mocked Trading API response"""
         # Mock successful API response
         mock_response = Mock()
@@ -112,10 +112,10 @@ class TestSandboxOrderPolling:
             }
         }
 
-        mock_trading_api.execute.return_value = mock_response
+        mocktrading_api.execute.return_value = mock_response
 
         order_manager = OrderManager(config)
-        order_manager._trading_api = mock_trading_api
+        order_manager.trading_api = mocktrading_api
 
         orders = order_manager.poll_new_orders()
 
@@ -124,8 +124,8 @@ class TestSandboxOrderPolling:
         assert orders[0]["OrderID"] == "TEST-ORDER-123"
 
         # Verify API was called with correct parameters
-        mock_trading_api.execute.assert_called_once()
-        call_args = mock_trading_api.execute.call_args
+        mocktrading_api.execute.assert_called_once()
+        call_args = mocktrading_api.execute.call_args
         assert call_args[0][0] == "GetOrders"  # First argument should be "GetOrders"
         assert isinstance(call_args[0][1], dict)  # Second argument should be a dict
 
@@ -133,7 +133,7 @@ class TestSandboxOrderPolling:
 class TestSandboxLabelCreation:
     """Test label creation in sandbox environment"""
 
-    def test_create_test_label_pdf(self, config):
+    def testcreate_test_label_pdf(self, config):
         """Test creation of test PDF labels for sandbox"""
         label_manager = LabelManager(config)
 
@@ -141,7 +141,7 @@ class TestSandboxLabelCreation:
         test_order_id = "TEST-ORDER-456"
         test_tracking = "TEST123456"
 
-        pdf_path = label_manager._create_test_label_pdf(test_order_id, test_tracking)
+        pdf_path = label_manager.create_test_label_pdf(test_order_id, test_tracking)
 
         # Should create a PDF file
         if pdf_path:
@@ -206,10 +206,10 @@ class TestSandboxIntegration:
         # Note: We don't actually call the API here to avoid rate limits
         # and because sandbox may not have test data
 
-    def test_end_to_end_sandbox_workflow(self, sandbox_config):
+    def test_end_to_end_sandbox_workflow(self, config):
         """Test complete workflow in sandbox mode"""
-        order_manager = OrderManager(sandbox_config)
-        label_manager = LabelManager(sandbox_config)
+        order_manager = OrderManager(config)
+        label_manager = LabelManager(config)
 
         # This would be a full workflow test but requires mock data
         # since sandbox environments typically don't have real orders

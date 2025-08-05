@@ -13,12 +13,12 @@ with open("requirements.txt", "r", encoding="utf-8") as fh:
 setup(
     name="ebay-label-printer",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Avalon Parton",
+    author_email="avalonlee@gmail.com",
     description="Automatically prints shipping labels and packing lists from eBay orders",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/ebay-label-printer",
+    url="https://github.com/plomdawg/ebay-label-printer",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

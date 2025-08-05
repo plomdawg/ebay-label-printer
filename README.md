@@ -4,19 +4,20 @@ Automates eBay order fulfillment: detects new orders â†’ buys shipping labels â†
 
 ## Quick Start
 
-```bash
-# Install dependencies
-make install
+Set environment variables:
+- `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_REFRESH_TOKEN`
+- `CUPS_SERVER_URI`, `PRINTER_NAME`
 
-# Run the automation
-make run
+```bash
+# Format and lint code
+make format lint
 
 # Run tests
 make test
 
-# Format and lint code
-make format
-make lint
+# Run the container
+make build
+make run
 ```
 
 ## Architecture
@@ -24,17 +25,4 @@ make lint
 - **Orders**: Poll eBay API for new orders
 - **Labels**: Purchase shipping labels via eBay Fulfillment API  
 - **Packing**: Generate QR-coded packing slips as PDFs
-- **Print**: Send PDFs to CUPS server at 192.168.8.194
-
-## Configuration
-
-Set environment variables:
-- `EBAY_CLIENT_ID`, `EBAY_CLIENT_SECRET`, `EBAY_REFRESH_TOKEN`
-- `CUPS_SERVER_URI`, `PRINTER_NAME`
-
-## Docker
-
-```bash
-make build
-make run-container
-```
+- **Print**: Send PDFs to CUPS server

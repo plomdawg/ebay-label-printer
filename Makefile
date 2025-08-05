@@ -1,6 +1,6 @@
 # eBay Label Printer Makefile
 
-.PHONY: help run test lint format build run-container clean install
+.PHONY: help test lint format build run-container clean install
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -8,9 +8,6 @@ help: ## Show this help message
 
 install: ## Install dependencies
 	pip install -r requirements.txt
-
-run: ## Run the full automation cycle
-	python run.py
 
 test: ## Run all tests
 	pytest -v --cov=app tests/
@@ -28,7 +25,7 @@ format-check: ## Check if code needs formatting
 build: ## Build the Docker image
 	docker build -t ebay-shipper .
 
-run-container: ## Run the container locally
+run: ## Run the container
 	docker run --env-file .env ebay-shipper
 
 clean: ## Clean up temporary files

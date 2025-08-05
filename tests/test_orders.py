@@ -15,9 +15,7 @@ from app.config import Config
 class TestOrderManager:
     """Test order polling and management"""
 
-    def __init__(self):
-        """Initialize test class"""
-        self.config = None
+    # pylint: disable=attribute-defined-outside-init
 
     def setup_method(self):
         """Set up test fixtures"""

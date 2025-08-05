@@ -1,3 +1,0 @@
-[console_scripts]
-ebay-label-printer = run:main
-

@@ -37,7 +37,7 @@ eBay Order Placed → Poll API → Buy Label → Generate Packing Slip → Print
 
 * **Language**: Python 3.11+
 * **Containerization**: Docker (single container for all logic)
-* **Printing**: Production CUPS server at `192.168.8.194`
+* **Printing**: Production CUPS server at `localhost`
 * **OS**: Ubuntu (host)
 * **CI**: GitHub Actions (unit + integration tests)
 
@@ -102,7 +102,7 @@ ebay-shipper/
 
 ### 4. Print (`print.py`)
 
-* Send both PDFs (label + packing slip) to the CUPS printer at `192.168.8.194`.
+* Send both PDFs (label + packing slip) to the CUPS printer at `localhost`.
 * Use Python subprocess to run `lp` or `lpr` commands.
 * Allow dry-run mode for tests.
 

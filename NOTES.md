@@ -7,7 +7,7 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 ## Project Overview
 - Automate eBay order fulfillment: detect orders → buy labels → generate packing slips → print
 - Single Docker container with Python 3.11+
-- Print to CUPS server at 192.168.8.194
+- Print to CUPS server at localhost
 - Test-first development with pytest
 
 ## Key Components
@@ -26,7 +26,7 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 ### Completed Features
 - eBay API integration with ebay-rest package for order polling and label purchasing
 - PDF packing slip generation with ReportLab
-- CUPS printing to remote server (192.168.8.194)
+- CUPS printing to remote server (localhost)
 - Docker containerization with multi-stage builds and security best practices
 - Comprehensive test suite with unit tests, integration tests, and API sandbox testing
 - Enhanced eBay client architecture with shared mixin pattern
@@ -58,5 +58,5 @@ Refer to INSTRUCTIONS.md for the project overview and key components.
 ### Containerization & Infrastructure
 - **Docker**: Multi-stage build with Python 3.11 slim, non-root user, health checks
 - **Volumes**: `/app/data` for persistent labels and logs
-- **Printing**: CUPS client included for remote printing to 192.168.8.194
+- **Printing**: CUPS client included for remote printing to localhost
 - **Testing**: Comprehensive test markers for unit/integration/API sandbox/production testing

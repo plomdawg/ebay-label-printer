@@ -15,7 +15,7 @@ class TestConfig:
         """Test that default configuration values are set correctly"""
         config = Config()
 
-        assert config.CUPS_SERVER_URI == "192.168.8.194"
+        assert config.CUPS_SERVER_URI == "localhost"
         assert config.PRINTER_NAME == "Thermal-Printer"
         assert config.POLLING_INTERVAL == 300
         assert config.DRY_RUN is False

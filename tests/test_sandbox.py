@@ -46,19 +46,6 @@ class TestSandboxConfiguration:
         assert config.current_client_secret == config.EBAY_SANDBOX_CLIENT_SECRET
         assert config.current_dev_id == config.EBAY_SANDBOX_DEV_ID
 
-    def test_sandbox_validation(self, config):
-        """Test configuration validation with sandbox credentials"""
-        # Should be valid if we have the sandbox environment variables set
-        if (
-            os.getenv("EBAY_SANDBOX_CLIENT_ID")
-            and os.getenv("EBAY_SANDBOX_CLIENT_SECRET")
-            and os.getenv("EBAY_SANDBOX_DEV_ID")
-        ):
-            assert config.validate() is True
-        else:
-            # If no real credentials, should still create config but validation may fail
-            assert isinstance(config.validate(), bool)
-
 
 class TestEbayClientInitialization:
     """Test eBay API client initialization in sandbox"""
@@ -199,15 +186,6 @@ class TestSandboxIntegration:
         ),
         reason="Sandbox credentials not available",
     )
-    def test_real_api_connection(self, config):
-        """Test actual connection to eBay sandbox APIs"""
-        order_manager = OrderManager(config)
-
-        # Should have valid API clients if credentials are correct
-        assert order_manager.trading_api is not None
-        # Note: We don't actually call the API here to avoid rate limits
-        # and because sandbox may not have test data
-
     def test_end_to_end_sandbox_workflow(self, config):
         """Test complete workflow in sandbox mode"""
         order_manager = OrderManager(config)

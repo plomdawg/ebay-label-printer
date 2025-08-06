@@ -21,6 +21,7 @@ class Config:  # pylint: disable=too-few-public-methods
         self.EBAY_CLIENT_ID: Optional[str] = os.getenv("EBAY_CLIENT_ID")
         self.EBAY_CLIENT_SECRET: Optional[str] = os.getenv("EBAY_CLIENT_SECRET")
         self.EBAY_DEV_ID: Optional[str] = os.getenv("EBAY_DEV_ID")
+        self.EBAY_AUTH_TOKEN: Optional[str] = os.getenv("EBAY_AUTH_TOKEN")
 
         # Sandbox configuration
         self.EBAY_SANDBOX_CLIENT_ID: Optional[str] = os.getenv("EBAY_SANDBOX_CLIENT_ID")
@@ -28,6 +29,9 @@ class Config:  # pylint: disable=too-few-public-methods
             "EBAY_SANDBOX_CLIENT_SECRET"
         )
         self.EBAY_SANDBOX_DEV_ID: Optional[str] = os.getenv("EBAY_SANDBOX_DEV_ID")
+        self.EBAY_SANDBOX_AUTH_TOKEN: Optional[str] = os.getenv(
+            "EBAY_SANDBOX_AUTH_TOKEN"
+        )
 
         # Environment setting (sandbox or production)
         self.EBAY_ENVIRONMENT: str = os.getenv("EBAY_ENVIRONMENT", "sandbox").lower()
@@ -54,12 +58,14 @@ class Config:  # pylint: disable=too-few-public-methods
                 self.EBAY_SANDBOX_CLIENT_ID,
                 self.EBAY_SANDBOX_CLIENT_SECRET,
                 self.EBAY_SANDBOX_DEV_ID,
+                self.EBAY_SANDBOX_AUTH_TOKEN,
             ]
         else:
             required_fields = [
                 self.EBAY_CLIENT_ID,
                 self.EBAY_CLIENT_SECRET,
                 self.EBAY_DEV_ID,
+                self.EBAY_AUTH_TOKEN,
             ]
         return all(field is not None for field in required_fields)
 
@@ -88,4 +94,13 @@ class Config:  # pylint: disable=too-few-public-methods
             self.EBAY_SANDBOX_DEV_ID
             if self.EBAY_ENVIRONMENT == "sandbox"
             else self.EBAY_DEV_ID
+        )
+
+    @property
+    def current_auth_token(self) -> Optional[str]:
+        """Get the auth token for the current environment"""
+        return (
+            self.EBAY_SANDBOX_AUTH_TOKEN
+            if self.EBAY_ENVIRONMENT == "sandbox"
+            else self.EBAY_AUTH_TOKEN
         )

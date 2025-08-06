@@ -58,6 +58,7 @@ class TestConfig:
             "EBAY_CLIENT_ID": "test_client_id",
             "EBAY_CLIENT_SECRET": "test_client_secret",
             "EBAY_DEV_ID": "test_dev_id",
+            "EBAY_AUTH_TOKEN": "test_auth_token",
         },
     )
     def test_validate_complete_config(self):
@@ -72,6 +73,7 @@ class TestConfig:
             "EBAY_SANDBOX_CLIENT_ID": "test_client_id",
             "EBAY_SANDBOX_CLIENT_SECRET": "test_client_secret",
             "EBAY_SANDBOX_DEV_ID": "test_dev_id",
+            "EBAY_SANDBOX_AUTH_TOKEN": "test_auth_token",
         },
     )
     def test_validate_complete_config_sandbox(self):

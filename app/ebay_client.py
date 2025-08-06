@@ -64,10 +64,16 @@ class EbayClientMixin:  # pylint: disable=too-few-public-methods
         else:
             domain = "api.ebay.com"
 
-        return {
+        config = {
             "appid": self.config.current_client_id,
             "devid": self.config.current_dev_id,
             "certid": self.config.current_client_secret,
             "domain": domain,
             "siteid": self.config.EBAY_SITE_ID,
         }
+
+        # Add auth token if available for Trading API calls
+        if self.config.current_auth_token:
+            config["token"] = self.config.current_auth_token
+
+        return config

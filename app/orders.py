@@ -28,6 +28,29 @@ class OrderManager(EbayClientMixin):
         self._seen_orders: Set[str] = self._load_seen_orders()
         super().__init__(config)
 
+    @staticmethod
+    def extract_orders_from_response(response) -> List[Dict[str, Any]]:
+        """
+        Extract orders from eBay API response.
+
+        Args:
+            response: eBay API response object
+
+        Returns:
+            List of order dictionaries
+        """
+        orders = []
+        if response.reply.Ack in ["Success", "Warning"]:
+            orders_array = response.dict().get("OrderArray")
+            if orders_array and isinstance(orders_array, dict):
+                orders = orders_array.get("Order", [])
+
+            # Handle single order case (not in array)
+            if isinstance(orders, dict):
+                orders = [orders]
+
+        return orders
+
     def _load_seen_orders(self) -> Set[str]:
         """Load previously seen order IDs from state file"""
         if self.state_file.exists():
@@ -77,34 +100,22 @@ class OrderManager(EbayClientMixin):
 
             response = self.trading_api.execute("GetOrders", api_request)
 
-            if response.reply.Ack in ["Success", "Warning"]:
-                orders_array = response.dict().get("OrderArray", {})
-                orders = orders_array.get("Order", [])
+            orders = self.extract_orders_from_response(response)
+            for order in orders:
+                order_id = order.get("OrderID", "")
 
-                # Handle single order case (not in array)
-                if isinstance(orders, dict):
-                    orders = [orders]
+                # Skip if we've already processed this order
+                if self.is_order_seen(order_id):
+                    continue
 
-                for order in orders:
-                    order_id = order.get("OrderID", "")
+                # Check if order needs fulfillment
+                order_status = order.get("OrderStatus", "")
+                shipped_time = order.get("ShippedTime")
 
-                    # Skip if we've already processed this order
-                    if self.is_order_seen(order_id):
-                        continue
-
-                    # Check if order needs fulfillment
-                    order_status = order.get("OrderStatus", "")
-                    shipped_time = order.get("ShippedTime")
-
-                    # Only process orders that are completed but not yet shipped
-                    if order_status == "Completed" and not shipped_time:
-                        new_orders.append(order)
-                        logger.info("Found new order %s", order_id)
-            else:
-                logger.error(
-                    "eBay API returned error: %s",
-                    response.dict().get("Errors", "Unknown error"),
-                )
+                # Only process orders that are completed but not yet shipped
+                if order_status == "Completed" and not shipped_time:
+                    new_orders.append(order)
+                    logger.info("Found new order %s", order_id)
 
         except EbayConnectionError as e:
             logger.error("eBay API connection error while polling orders: %s", e)

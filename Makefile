@@ -1,6 +1,6 @@
 # eBay Label Printer Makefile
 
-.PHONY: help test lint format build run-container clean install
+.PHONY: help test test-print test-api-sandbox test-api-production test-api-all lint format build run-container clean install
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -14,6 +14,15 @@ test: ## Run all tests
 
 test-print: ## Run print tests
 	pytest -v --cov=app tests/ -m print
+
+test-api-sandbox: ## Run eBay sandbox API tests (requires sandbox credentials)
+	pytest -v --cov=app tests/ -m api_sandbox -s
+
+test-api-production: ## Run eBay production API tests (requires production credentials)
+	pytest -v --cov=app tests/ -m api_production -s
+
+test-api-all: ## Run all eBay API tests (both sandbox and production)
+	pytest -v --cov=app tests/ -m "api_sandbox or api_production" -s
 
 lint: ## Check code style and type hints
 	pylint --disable=fixme app/ tests/

@@ -22,7 +22,7 @@ class TestPackingAndPrintingIntegration:
 
         self.packing_generator = PackingSlipGenerator(self.config)
         self.print_manager = PrintManager(self.config)
-        self.config.CUPS_SERVER_URI = "192.168.8.194"
+        self.config.CUPS_SERVER_URI = "localhost"
         self.config.PRINTER_NAME = "Thermal-Printer"
 
         # Sample order data for testing

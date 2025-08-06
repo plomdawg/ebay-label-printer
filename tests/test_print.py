@@ -17,7 +17,7 @@ class TestPrintManager:
     def setup_method(self):
         """Set up test fixtures"""
         self.config = Mock(spec=Config)
-        self.config.CUPS_SERVER_URI = "192.168.8.194"
+        self.config.CUPS_SERVER_URI = "localhost"
         self.config.PRINTER_NAME = "test_printer"
         self.config.DRY_RUN = False
 
@@ -57,7 +57,7 @@ class TestPrintManager:
             mock_run.assert_called_once()
             args = mock_run.call_args[0][0]
             assert args[0] == "lp"
-            assert "-h" in args and "192.168.8.194" in args
+            assert "-h" in args and "localhost" in args
             assert "-d" in args and "test_printer" in args
             assert str(pdf_file) in args
 
@@ -96,7 +96,7 @@ class TestPrintManager:
         mock_run.assert_called_once()
         args = mock_run.call_args[0][0]
         assert args[0] == "lpstat"
-        assert "-h" in args and "192.168.8.194" in args
+        assert "-h" in args and "localhost" in args
         assert "-p" in args and "test_printer" in args
 
     @patch("app.print.subprocess.run")

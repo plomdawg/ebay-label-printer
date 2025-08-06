@@ -30,7 +30,6 @@ def config():
             ),
             "EBAY_SANDBOX_DEV_ID": os.getenv("EBAY_SANDBOX_DEV_ID", "test_dev_id"),
             "EBAY_SITE_ID": "0",  # US site
-            "STATE_FILE": "test_seen_orders.json",
         },
     ):
         yield Config()

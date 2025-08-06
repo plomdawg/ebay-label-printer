@@ -88,15 +88,10 @@ def process_orders(order_manager, label_manager, packing_generator, print_manage
         logger.info("Found %d new orders", len(new_orders))
         
         for order in new_orders:
-            order_id = order.get('order_id', 'unknown')
+            order_id = order.get('OrderID', 'unknown')
             logger.info("Processing order %s", order_id)
             
             try:
-                # Skip if already processed
-                if order_manager.is_order_seen(order_id):
-                    logger.info("Order %s already processed, skipping", order_id)
-                    continue
-                
                 # Buy shipping label
                 label_info = label_manager.buy_shipping_label(order)
                 if not label_info:
@@ -114,7 +109,6 @@ def process_orders(order_manager, label_manager, packing_generator, print_manage
                 success = print_manager.print_documents(pdf_paths)
                 
                 if success:
-                    order_manager.mark_order_processed(order_id)
                     logger.info("Successfully processed order %s", order_id)
                 else:
                     logger.error("Failed to print documents for order %s", order_id)

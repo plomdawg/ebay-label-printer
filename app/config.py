@@ -38,7 +38,7 @@ class Config:  # pylint: disable=too-few-public-methods
         self.EBAY_SITE_ID: str = os.getenv("EBAY_SITE_ID", "0")  # US site ID
 
         # CUPS Printer Configuration
-        self.CUPS_SERVER_URI: str = os.getenv("CUPS_SERVER_URI", "192.168.8.194")
+        self.CUPS_SERVER_URI: str = os.getenv("CUPS_SERVER_URI", "localhost")
         self.PRINTER_NAME: str = os.getenv("PRINTER_NAME", "Thermal-Printer")
 
         # Application Settings
@@ -47,9 +47,6 @@ class Config:  # pylint: disable=too-few-public-methods
         )  # 5 minutes default
         self.DRY_RUN: bool = os.getenv("DRY_RUN", "false").lower() == "true"
         self.LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
-
-        # Data Storage
-        self.STATE_FILE: str = os.getenv("STATE_FILE", "seen_order_ids.json")
 
     def validate(self) -> bool:
         """Validate that required configuration is present"""
